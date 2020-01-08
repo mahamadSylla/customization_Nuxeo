@@ -1,0 +1,46 @@
+<!--
+`nuxeo-othercontracts-search-form`
+@group Nuxeo UI
+@element nuxeo-othercontracts-search-form
+-->
+<dom-module id="nuxeo-othercontracts-search-form">
+  <template>
+    <style>
+      *[role=widget] {
+        padding: 5px;
+      }
+    </style>
+    <nuxeo-input role="widget" value="{{params.contact_Nom}}" label="Contact  Nom" type="text"></nuxeo-input>
+
+    <div role="widget">
+      <label>Creation Date </label>
+      <nuxeo-checkbox-aggregation value="{{params.qualityDocument_applicationDate_agg}}" data="[[aggregations.qualityDocument_applicationDate_agg]]"></nuxeo-checkbox-aggregation>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'nuxeo-othercontracts-search-form',
+      behaviors: [Nuxeo.LayoutBehavior],
+      properties: {
+
+        /**
+         * @search otherContracts
+         */
+        params: {
+          type: Object,
+          value: {},
+          notify: true,
+        },
+
+        aggregations: {
+          type: Object,
+          value: {},
+          notify: true,
+        },
+
+      }
+    });
+  </script>
+</dom-module>
