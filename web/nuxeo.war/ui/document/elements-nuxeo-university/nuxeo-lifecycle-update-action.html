@@ -1,0 +1,41 @@
+<dom-module id="nuxeo-lifecycle-update-action">
+
+    <template >
+    <nuxeo-operation id="LifecycleOp"
+                     op="Document.FollowLifecycleTransition" 
+                     input="[[document]]"    
+                     params='{"value":"approve"}'>
+    </nuxeo-operation>
+    
+        <paper-icon-button id="bt" icon="icons:build" on-tap="_updateLifecycle"></paper-icon-button>
+        <paper-tooltip for="bt">[[i18n('documentContentView.datatable.header.title')]]</paper-tooltip> 
+     </template>
+  
+ 		 <script>
+ 			Polymer({
+     	 is: 'nuxeo-lifecycle-update-action', 
+     	 behaviors: [Nuxeo.I18nBehavior],
+      	properties: {
+          document: {
+            type: Object
+          }
+        },
+        _updateLifecycle: function(){
+          this.$.LifecycleOp.execute().then(function(){
+            //Display notification
+            this.fire('notify', {
+              message: this.i18n('documentMyLifecycleAction.success')
+            });
+            // Force refresh current document
+            this.fire('document-updated');
+          }.bind(this)).catch(function(err){
+            //Error handling
+            console.log(err);
+            this.fire('notify', {
+              message: this.i18n('documentMyLifecycleAction.error')
+            });
+          }.bind(this));
+        }
+        });
+    </script>
+</dom-module>

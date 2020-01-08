@@ -1,0 +1,58 @@
+<!--
+`nuxeo-contact-metadata-layout`
+@group Nuxeo UI
+@element nuxeo-contact-metadata-layout
+-->
+<dom-module id="nuxeo-contact-metadata-layout">
+  <template>
+    <style>
+      *[role=widget] {
+        padding: 5px;
+      }
+    </style>
+    <div role="widget">
+      <label>[[i18n('label.dublincore.title')]]</label>
+      <div name="title">[[document.properties.dc:title]]</div>
+    </div>
+
+    <nuxeo-document-attachments role="widget" document="[[document]]"></nuxeo-document-attachments>
+
+    <div role="widget">
+      <label>Email</label>
+      <div>[[document.properties.contact:Email]]</div>
+    </div>
+
+    <div role="widget">
+      <label>Entreprise</label>
+      <div>[[document.properties.contact:Entreprise]]</div>
+    </div>
+
+    <div role="widget">
+      <label>Nom</label>
+      <div>[[document.properties.contact:Nom]]</div>
+    </div>
+
+    <div role="widget">
+      <label>Prenom</label>
+      <div>[[document.properties.contact:Prenom]]</div>
+    </div>
+
+    </template>
+
+  <script>
+    Polymer({
+      is: 'nuxeo-contact-metadata-layout',
+      behaviors: [Nuxeo.LayoutBehavior],
+      properties: {
+
+        /**
+         * @doctype Contact
+         */
+        document: {
+          type: Object,
+        },
+
+      }
+    });
+  </script>
+</dom-module>

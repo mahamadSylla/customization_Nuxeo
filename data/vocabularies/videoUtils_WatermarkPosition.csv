@@ -1,0 +1,6 @@
+"id","label","obsolete","ordering"
+"Top-Left","videoUtils.watermark.position.topleft","0","2"
+"Top-Right","videoUtils.watermark.position.topright","0","3"
+"Bottom-Left","videoUtils.watermark.position.bottomleft","0","4"
+"Bottom-Right","videoUtils.watermark.position.bottomright","0","5"
+"Custom","videoUtils.watermark.position.custom","0","1"

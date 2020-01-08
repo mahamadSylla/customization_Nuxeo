@@ -1,0 +1,1846 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component name="studio.extensions.customizedwidget-1995" version="1.0.0">
+  <require>org.nuxeo.runtime.started</require>
+  <extension target="org.nuxeo.ecm.core.schema.TypeService" point="schema">
+    <schema name="contact" prefix="contact" override="true" src="data/schemas/contact.xsd"/>
+    <schema name="domain_schema" prefix="domain_schema" override="true" src="data/schemas/domain_schema.xsd"/>
+    <schema name="file_schema" prefix="file_schema" override="true" src="data/schemas/file_schema.xsd"/>
+    <schema name="qualityDocument" prefix="qualityDocument" override="true" src="data/schemas/qualityDocument.xsd"/>
+    <schema name="nuxeo-wabtec-share" prefix="nuxeo-wabtec-share" override="true" src="data/schemas/nuxeo-wabtec-share.xsd"/>
+    <schema name="policy" prefix="policy" override="true" src="data/schemas/policy.xsd"/>
+    <schema name="RechercheGlobale_pp" prefix="RechercheGlobale_pp" override="true" src="data/schemas/RechercheGlobale_pp.xsd"/>
+  </extension>
+  <extension target="org.nuxeo.ecm.core.schema.TypeService" point="doctype">
+    <doctype name="Contact" extends="Document">
+      <schema name="contact"/>
+      <schema name="dublincore"/>
+      <schema name="common"/>
+      <schema name="uid"/>
+    </doctype>
+    <doctype name="Folder" append="true">
+      <subtypes>
+        <type>Contact</type>
+      </subtypes>
+    </doctype>
+    <doctype name="Workspace" append="true">
+      <subtypes>
+        <type>Contact</type>
+      </subtypes>
+    </doctype>
+    <doctype name="Domain" extends="Folder">
+      <schema name="domain_schema"/>
+      <schema name="uid"/>
+      <facet name="SuperSpace"/>
+      <subtypes>
+        <type>SectionRoot</type>
+        <type>TemplateRoot</type>
+        <type>WorkspaceRoot</type>
+      </subtypes>
+    </doctype>
+    <doctype name="Root" append="true">
+      <subtypes>
+        <type>Domain</type>
+      </subtypes>
+    </doctype>
+    <doctype name="File" extends="Document">
+      <schema name="file_schema"/>
+      <schema name="dublincore"/>
+      <schema name="common"/>
+      <schema name="uid"/>
+      <schema name="file"/>
+      <schema name="files"/>
+      <facet name="Versionable"/>
+      <facet name="NXTag"/>
+      <facet name="Publishable"/>
+      <facet name="Commentable"/>
+      <facet name="HasRelatedText"/>
+    </doctype>
+    <doctype name="Folder" append="true">
+      <subtypes>
+        <type>File</type>
+      </subtypes>
+    </doctype>
+    <doctype name="Workspace" append="true">
+      <subtypes>
+        <type>File</type>
+      </subtypes>
+    </doctype>
+    <doctype name="QualityDocument" extends="Folder">
+      <schema name="qualityDocument"/>
+      <schema name="uid"/>
+      <schema name="qualityDocument"/>
+      <facet name="Versionable"/>
+      <facet name="Commentable"/>
+      <facet name="HasRelatedText"/>
+      <facet name="PublishSpace"/>
+    </doctype>
+    <doctype name="QualityDocument" append="true">
+      <subtypes>
+        <type>QualityDocument</type>
+      </subtypes>
+    </doctype>
+    <doctype name="Document" append="true">
+      <subtypes>
+        <type>QualityDocument</type>
+      </subtypes>
+    </doctype>
+    <doctype name="Folder" append="true">
+      <subtypes>
+        <type>QualityDocument</type>
+      </subtypes>
+    </doctype>
+    <doctype name="Workspace" append="true">
+      <subtypes>
+        <type>QualityDocument</type>
+      </subtypes>
+    </doctype>
+    <doctype name="nuxeo-wabtec-share" extends="Folder">
+      <schema name="nuxeo-wabtec-share"/>
+      <schema name="uid"/>
+    </doctype>
+    <doctype name="Folder" append="true">
+      <subtypes>
+        <type>nuxeo-wabtec-share</type>
+      </subtypes>
+    </doctype>
+    <doctype name="Workspace" append="true">
+      <subtypes>
+        <type>nuxeo-wabtec-share</type>
+      </subtypes>
+    </doctype>
+    <doctype name="RechercheGlobale_pp" extends="Document">
+      <facet name="ContentViewDisplay"/>
+      <facet name="SavedSearch"/>
+      <facet name="HiddenInNavigation"/>
+      <schema name="RechercheGlobale_pp"/>
+    </doctype>
+    <doctype name="VideoUtils_Watermark_PageProvider_pp" extends="Document">
+      <facet name="ContentViewDisplay"/>
+      <facet name="SavedSearch"/>
+      <facet name="HiddenInNavigation"/>
+    </doctype>
+    <doctype name="workflow-status_pp" extends="Document">
+      <facet name="ContentViewDisplay"/>
+      <facet name="SavedSearch"/>
+      <facet name="HiddenInNavigation"/>
+    </doctype>
+  </extension>
+  <extension target="org.nuxeo.ecm.core.lifecycle.LifeCycleService" point="types">
+    <types>
+      <type name="Contact">default</type>
+    </types>
+    <types>
+      <type name="Domain">default</type>
+    </types>
+    <types>
+      <type name="File">default</type>
+    </types>
+    <types>
+      <type name="QualityDocument">QualityLifeCycle</type>
+    </types>
+    <types>
+      <type name="nuxeo-wabtec-share">default</type>
+    </types>
+  </extension>
+  <extension target="org.nuxeo.ecm.platform.types.TypeService" point="types">
+    <type id="Contact">
+      <label>Contact</label>
+      <description></description>
+    </type>
+    <type id="Domain">
+      <label>Domain</label>
+      <category>SuperDocument</category>
+      <icon>/img/domain.gif</icon>
+      <bigIcon>/img/domain.gif</bigIcon>
+      <description></description>
+    </type>
+    <type id="File">
+      <label>File</label>
+      <category>SimpleDocument</category>
+      <icon>/img/file.gif</icon>
+      <bigIcon>/img/file_100.png</bigIcon>
+      <description></description>
+    </type>
+    <type id="QualityDocument">
+      <label>type.DocumentQuality</label>
+      <icon>/img/file.gif</icon>
+      <description>Quality document's migration.</description>
+    </type>
+    <type id="nuxeo-wabtec-share">
+      <label>nuxeo-wabtec-share</label>
+      <description>un module permettant d'envoyer un document par mail a des contacts.</description>
+    </type>
+  </extension>
+  <extension target="org.nuxeo.ecm.core.lifecycle.LifeCycleService" point="lifecycle">
+    <lifecycle name="QualityLifeCycle" defaultInitial="lifecylce.quality.draft">
+      <transitions>
+        <transition name="to_forapproval" destinationState="lifecylce.quality.forapproval">
+          <description></description>
+        </transition>
+        <transition name="to_forchecking" destinationState="lifecylce.quality.forchecking">
+          <description></description>
+        </transition>
+        <transition name="to_forcancelation" destinationState="lifecylce.quality.forcancellation">
+          <description></description>
+        </transition>
+        <transition name="to_ineffect" destinationState="lifecylce.quality.ineffect">
+          <description></description>
+        </transition>
+        <transition name="to_draft" destinationState="lifecylce.quality.draft">
+          <description></description>
+        </transition>
+        <transition name="to_cancelled" destinationState="lifecylce.quality.cancelled">
+          <description></description>
+        </transition>
+        <transition name="to_ineffect" destinationState="lifecylce.quality.ineffect">
+          <description></description>
+        </transition>
+        <transition name="to_approved" destinationState="lifecylce.quality.approved">
+          <description></description>
+        </transition>
+        <transition name="to_forapproval" destinationState="lifecylce.quality.forapproval">
+          <description></description>
+        </transition>
+        <transition name="to_forchecking" destinationState="lifecylce.quality.forchecking">
+          <description></description>
+        </transition>
+        <transition name="to_cancelled" destinationState="lifecylce.quality.cancelled">
+          <description></description>
+        </transition>
+        <transition name="to_forcancellation" destinationState="lifecylce.quality.forcancellation">
+          <description></description>
+        </transition>
+        <transition name="to_draft" destinationState="lifecylce.quality.draft">
+          <description></description>
+        </transition>
+        <transition name="to_ineffect" destinationState="lifecylce.quality.ineffect">
+          <description></description>
+        </transition>
+        <transition name="to_approved" destinationState="lifecylce.quality.approved">
+          <description></description>
+        </transition>
+        <transition name="to_draft" destinationState="lifecylce.quality.draft">
+          <description></description>
+        </transition>
+        <transition name="to_draft" destinationState="lifecylce.quality.draft">
+          <description></description>
+        </transition>
+        <transition name="to_cancelled" destinationState="lifecylce.quality.cancelled">
+          <description></description>
+        </transition>
+        <transition name="to_forapproval" destinationState="lifecylce.quality.forapproval">
+          <description></description>
+        </transition>
+        <transition name="to_ineffect" destinationState="lifecylce.quality.ineffect">
+          <description></description>
+        </transition>
+        <transition name="to_draft" destinationState="lifecylce.quality.draft">
+          <description></description>
+        </transition>
+        <transition name="to_forchecking" destinationState="lifecylce.quality.forchecking">
+          <description></description>
+        </transition>
+        <transition name="to_forapproval" destinationState="lifecylce.quality.forapproval">
+          <description></description>
+        </transition>
+        <transition name="to_ineffect" destinationState="lifecylce.quality.ineffect">
+          <description></description>
+        </transition>
+      </transitions>
+      <states>
+        <state name="lifecylce.quality.approved" description="">
+          <transitions>
+            <transition>to_draft</transition>
+            <transition>to_ineffect</transition>
+            <transition>to_forchecking</transition>
+            <transition>to_forapproval</transition>
+            <transition>to_forcancelation</transition>
+          </transitions>
+        </state>
+        <state name="lifecylce.quality.forcancellation" description="">
+          <transitions>
+            <transition>to_ineffect</transition>
+            <transition>to_approved</transition>
+            <transition>to_cancelled</transition>
+          </transitions>
+        </state>
+        <state name="lifecylce.quality.ineffect" description="">
+          <transitions>
+            <transition>to_draft</transition>
+            <transition>to_forchecking</transition>
+            <transition>to_forapproval</transition>
+            <transition>to_forcancellation</transition>
+            <transition>to_cancelled</transition>
+          </transitions>
+        </state>
+        <state name="lifecylce.quality.forapproval" description="">
+          <transitions>
+            <transition>to_draft</transition>
+            <transition>to_ineffect</transition>
+            <transition>to_approved</transition>
+          </transitions>
+        </state>
+        <state name="lifecylce.quality.cancelled" description="">
+          <transitions>
+            <transition>to_draft</transition>
+          </transitions>
+        </state>
+        <state name="lifecylce.quality.forchecking" description="">
+          <transitions>
+            <transition>to_draft</transition>
+            <transition>to_ineffect</transition>
+            <transition>to_forapproval</transition>
+            <transition>to_cancelled</transition>
+          </transitions>
+        </state>
+        <state name="lifecylce.quality.draft" description="" initial="true">
+          <transitions>
+            <transition>to_ineffect</transition>
+            <transition>to_forchecking</transition>
+            <transition>to_forapproval</transition>
+          </transitions>
+        </state>
+      </states>
+    </lifecycle>
+    <lifecycle name="default" defaultInitial="project">
+      <transitions>
+        <transition name="approve" destinationState="approved">
+          <description></description>
+        </transition>
+        <transition name="obsolete" destinationState="obsolete">
+          <description></description>
+        </transition>
+        <transition name="delete" destinationState="deleted">
+          <description></description>
+        </transition>
+        <transition name="backToProject" destinationState="project">
+          <description></description>
+        </transition>
+        <transition name="delete" destinationState="deleted">
+          <description></description>
+        </transition>
+        <transition name="delete" destinationState="deleted">
+          <description></description>
+        </transition>
+        <transition name="undelete" destinationState="project">
+          <description></description>
+        </transition>
+      </transitions>
+      <states>
+        <state name="project" description="Default state" initial="true">
+          <transitions>
+            <transition>approve</transition>
+            <transition>obsolete</transition>
+            <transition>delete</transition>
+          </transitions>
+        </state>
+        <state name="approved" description="Content has been approved">
+          <transitions>
+            <transition>backToProject</transition>
+            <transition>delete</transition>
+          </transitions>
+        </state>
+        <state name="obsolete" description="Content becomes obsolete">
+          <transitions>
+            <transition>delete</transition>
+          </transitions>
+        </state>
+        <state name="deleted" description="Content is in the trash (before real deletion)">
+          <transitions>
+            <transition>undelete</transition>
+          </transitions>
+        </state>
+      </states>
+    </lifecycle>
+  </extension>
+  <extension target="org.nuxeo.ecm.platform.ec.notification.service.NotificationService" point="templates">
+    <template name="appReviewStarted" src="data/templates/appReviewStarted.ftl"/>
+    <template name="defaultNotifTemplate" src="data/templates/defaultNotifTemplate.ftl"/>
+    <template name="emailDocument" src="data/templates/emailDocument.ftl"/>
+    <template name="modif" src="data/templates/modif.ftl"/>
+    <template name="publish" src="data/templates/publish.ftl"/>
+    <template name="subscriptionsUpdated" src="data/templates/subscriptionsUpdated.ftl"/>
+    <template name="workflow" src="data/templates/workflow.ftl"/>
+    <template name="workflowTaskAssigned" src="data/templates/workflowTaskAssigned.ftl"/>
+    <template name="workflowTaskDelegated" src="data/templates/workflowTaskDelegated.ftl"/>
+  </extension>
+  <extension target="org.nuxeo.ecm.platform.query.api.PageProviderService" point="providers">
+    <genericPageProvider class="org.nuxeo.elasticsearch.provider.ElasticSearchNxqlPageProvider" name="RechercheGlobale">
+      <trackUsage>true</trackUsage>
+      <property name="coreSession">#{documentManager}</property>
+      <whereClause>
+        <predicate parameter="qualityDocument:perimeter" operator="ILIKE">
+          <field schema="RechercheGlobale_pp" name="qualityDocument_perimeter"/>
+        </predicate>
+        <predicate parameter="qualityDocument:domain" operator="ILIKE">
+          <field schema="RechercheGlobale_pp" name="qualityDocument_domain"/>
+        </predicate>
+        <predicate parameter="qualityDocument:modificationDescription" operator="ILIKE">
+          <field schema="RechercheGlobale_pp" name="qualityDocument_modificationDescription"/>
+        </predicate>
+        <predicate parameter="qualityDocument:process" operator="LIKE">
+          <field schema="RechercheGlobale_pp" name="qualityDocument_process"/>
+        </predicate>
+        <predicate parameter="qualityDocument:manager" operator="ILIKE">
+          <field schema="RechercheGlobale_pp" name="qualityDocument_manager"/>
+        </predicate>
+        <predicate parameter="qualityDocument:qualityDocumenttype" operator="ILIKE">
+          <field schema="RechercheGlobale_pp" name="qualityDocument_qualityDocumenttype"/>
+        </predicate>
+        <predicate parameter="qualityDocument:method" operator="ILIKE">
+          <field schema="RechercheGlobale_pp" name="qualityDocument_method"/>
+        </predicate>
+        <predicate parameter="qualityDocument:validator" operator="STARTSWITH">
+          <field schema="RechercheGlobale_pp" name="qualityDocument_validator"/>
+        </predicate>
+        <predicate parameter="qualityDocument:method_validator" operator="ILIKE">
+          <field schema="RechercheGlobale_pp" name="qualityDocument_method_validator"/>
+        </predicate>
+        <predicate parameter="qualityDocument:toReviewImpact" operator="=">
+          <field schema="RechercheGlobale_pp" name="qualityDocument_toReviewImpact"/>
+        </predicate>
+        <fixedPart>ecm:mixinType != 'HiddenInNavigation' AND ecm:isCheckedInVersion = 0 AND ecm:isTrashed = 0 AND ecm:currentLifeCycleState != 'lifecycle.quality.cancelled'  AND ecm:isProxy = 0 AND ecm:primaryType = 'QualityDocument'</fixedPart>
+      </whereClause>
+      <searchDocumentType>RechercheGlobale_pp</searchDocumentType>
+      <aggregates>
+        <aggregate id="qualityDocument_applicationDate_agg" type="date_range" parameter="qualityDocument:applicationDate">
+          <field schema="RechercheGlobale_pp" name="qualityDocument_applicationDate_agg"/>
+          <properties/>
+          <dateRanges>
+            <dateRange key="from_now-7d_to_now" fromDate="now-7d" toDate="now"/>
+            <dateRange key="from_now-1M_to_now" fromDate="now-1M" toDate="now"/>
+            <dateRange key="from_now-24H_to_now" fromDate="now-24H" toDate="now"/>
+          </dateRanges>
+        </aggregate>
+        <aggregate id="qualityDocument_reviewDate_agg" type="date_range" parameter="qualityDocument:reviewDate">
+          <field schema="RechercheGlobale_pp" name="qualityDocument_reviewDate_agg"/>
+          <properties/>
+          <dateRanges>
+            <dateRange key="from_now-7d_to_now" fromDate="now-7d" toDate="now"/>
+          </dateRanges>
+        </aggregate>
+      </aggregates>
+      <pageSize>10</pageSize>
+    </genericPageProvider>
+    <genericPageProvider class="org.nuxeo.elasticsearch.provider.ElasticSearchNxqlPageProvider" name="VideoUtils_Watermark_PageProvider">
+      <trackUsage>true</trackUsage>
+      <property name="coreSession">#{documentManager}</property>
+      <searchDocumentType>VideoUtils_Watermark_PageProvider_pp</searchDocumentType>
+      <pattern quoteParameters="false">SELECT * FROM Document WHERE (ecm:fulltext = '?*' AND ecm:mixinType != 'HiddenInNavigation' AND ecm:mixinType = 'Picture' AND  ecm:isCheckedInVersion = 0 AND ecm:currentLifeCycleState != 'deleted'AND ecm:tag = 'watermark')</pattern>
+      <pageSize>10</pageSize>
+    </genericPageProvider>
+    <genericPageProvider class="org.nuxeo.elasticsearch.provider.ElasticSearchNxqlPageProvider" name="workflow-status">
+      <trackUsage>true</trackUsage>
+      <property name="coreSession">#{documentManager}</property>
+      <searchDocumentType>workflow-status_pp</searchDocumentType>
+      <pattern>SELECT * FROM Document WHERE (ecm:isCheckedInVersion = 0 AND ecm:currentLifeCycleState = 'opened' AND ecm:primaryType = 'RoutingTask')</pattern>
+      <pageSize>10</pageSize>
+    </genericPageProvider>
+  </extension>
+  <extension target="org.nuxeo.automation.scripting.internals.AutomationScriptingComponent" point="operation">
+    <scriptedOperation id="javascript.videoUtils_AddToTranscodedVideos">
+      <inputType>document</inputType>
+      <outputType>document</outputType>
+      <category>javascript</category>
+      <description></description>
+      <script><![CDATA[/* Adds a rendition to the vid:transcodedVideos field of the input Video, returns the input
+
+     Params:
+         - name: The name for the rendition to add
+         - blob: The blob of the video to add to the renditions
+         - save: If save is passed and is true (either it is a boolean or a string whose lower case value is "true"),
+                      the input document is saved.
+     
+     ====================================
+     IMPORTANT
+     If a rendition of the same name already exists, the chain returns without modiying the document
+     ====================================
+     
+     The vid:transcodedVideos field is a Complex, multivalued, that contains (among other things)
+      a Blob and a StringList ("streams").
+      This makes it impossible to handle with JavaScript, at least as of Nuxeo 9.10, and we don't want
+      to use a plug-in because it makes quick installation and demo more complex.
+      
+      So, we use RunScript and handle the TranscodedVideo using inline Java. Notice that using a mix
+      of Java and JavaScript does not work, since the core JS Automaiton Engine will sometime
+      convert some values to JSON => failure when saved back.
+      RunScript is used to:
+          - Build the TranscodedVideo Java object
+          - Add it to the vid:transcodedVideos field
+*/
+function run(input, params) {
+  var blob, saveDoc, i, max, transcodingName, transcodedVideosField, SCRIPT;
+  
+  // ================= Error check +> return right away =================
+  if(!input.hasFacet("Video") || input["file:content"] === null) {
+    return input;
+  }
+  
+  blob = params.blob;
+  if(typeof blob === "undefined" || blob === null) {
+    Console.error("No blob to add to the renditions");
+    return input;
+  }
+  
+  transcodingName = params.name;
+  if(!transcodingName) {
+    return input;
+  }
+  
+  transcodedVideosField = input["vid:transcodedVideos"];
+  max = transcodedVideosField.length;
+  for(i = 0; i < max; ++i) {
+    if(transcodedVideosField[i].name === transcodingName) {
+      return input;
+    }
+  }
+  
+  saveDoc = false;
+  if( typeof params.save === "string" && params.save.toLowerCase() === "true") {
+    saveDoc = true;
+  } else if(typeof params.save === "boolean") {
+    saveDoc = params.save;
+  }
+    
+  // ================= Add the rendition =================
+  // Get the VideoInfo
+  javascript.videoUtils_GetVideoInfo(blob, {});
+  // We know have a valid ctx.javaVideoInfo
+  
+  // Build a Java TranscodedVideo object, to add to the vid:transcodedVideos field
+  ctx.javaTranscodedVideo = null;
+  ctx.transcodingName = transcodingName;
+  ctx.videoBlobToAdd = blob;
+  // ctx.javaVideoInfo has been filled by the call to javascript.utils_GetVideoInfo
+  SCRIPT = "Context[\"javaTranscodedVideo\"] = org.nuxeo.ecm.platform.video.TranscodedVideo.fromBlobAndInfo(Context[\"transcodingName\"], Context[\"videoBlobToAdd\"], Context[\"javaVideoInfo\"])";
+  RunScript(null, {'script': SCRIPT});
+  //Console.log("javaTranscodedVideo =>: " + ctx.javaTranscodedVideo.toMap().toString());
+
+  /* ORIGINAL CODE TO ADD AN ENTRY TO vid:transcodedVideos
+       (see org.nuxeo.ecm.platform.video.service.VideoConversionWork#saveNewTranscodedVideo)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+List<Map<String, Serializable>> transcodedVideos = (List<Map<String, Serializable>>) doc.getPropertyValue("vid:transcodedVideos");
+if (transcodedVideos == null) {
+  transcodedVideos = new ArrayList<>();
+}
+transcodedVideos.add(transcodedVideo.toMap());
+doc.setPropertyValue("vid:transcodedVideos", (Serializable) transcodedVideos);
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+=> WE WILL NOT HANDLE THE if (transcodedVideos == null) part
+=> Inside RunScript, we make it simpler, by using context variable (so no need to explicitely give them a type
+      which is cumbersome: It must be a fully qualified name in MVEL, can fail, etc.)
+  */
+  ctx.attvINPUT_DOC = input;
+  SCRIPT = "Context[\"attv_FIELD\"] = Context[\"attvINPUT_DOC\"].getDoc().getPropertyValue(\"vid:transcodedVideos\");\n";
+  SCRIPT += "Context[\"attv_FIELD\"] .add(Context[\"javaTranscodedVideo\"].toMap());\n";
+  SCRIPT += "Context[\"attvINPUT_DOC\"].getDoc().setPropertyValue(\"vid:transcodedVideos\", Context[\"attv_FIELD\"] );";
+  //Console.log("\nTHE SCRIPT:\n" + SCRIPT);
+  RunScript(null, {'script': SCRIPT});
+  
+  if(saveDoc) {
+   input = Document.Save(input, {});
+  }
+  
+  return input;
+}
+]]></script>
+      <param type="string" name="blob"/>
+      <param type="string" name="name"/>
+      <param type="string" name="save"/>
+    </scriptedOperation>
+    <scriptedOperation id="javascript.videoUtils_DispatchToDestination">
+      <inputType>document</inputType>
+      <outputType>blob</outputType>
+      <category>javascript</category>
+      <description></description>
+      <script><![CDATA[/* Centralization of the code handling the destination of the calculated new video
+
+   To be called by the misc. chain, api_Video_... (videoUtils_api_Slice, videoUtils_api_Watermark, ...)
+   
+   * input is the original input document
+       Usually a Video document
+       But can be a Folder or a Collection (merging videos)
+
+   * parameters:
+       destination: Must be the id of an entry of the videoUtils_Destination vocabulary
+       newDocFileName:
+         The title to give to a document when destination is "newDoc"
+       renditionName
+         The name of the rendition when the destination is "renditions"
+       blobToDispatch
+         As its name state
+         SEE THE WARNING BELOW
+
+   * output is a blob whose content depends on the destination:
+         - download => the result video blob itself, directly (the one in params.blobToDispatch)
+         - newDoc => a JSON string of an object containing docId and docPath of the newly created document
+             The document is created in the parent of the input document
+             (Same container as the input)
+         - files => The return is a string, JSON object with a "result" property set to "OK"
+         - renditions => The return is string, JSON object with a "result" property set to "OK"
+
+    ===================================================================
+    WARNING   *   WARNING  *   WARNING  *   WARNING  *   WARNING  *   WARNING
+    ===================================================================
+    Parameters declared can only be declared a "string" (see the "Parameters" tab),
+    *BUT* it is just the Studio UI. You can pass a different type. For example, here, the
+    blobToDispatch parameters MUST be passed as a blob. For example:
+    
+    var theBlob = input["file:content"];
+    var result = javascript. utils_Video_DispatchToDestination(
+      input, {
+      "destination": "download",
+      "blobToDispatch": theBlob
+      }
+    )
+
+*/
+function run(input, params) {
+  
+  var blobResult, inputBlob, destination, newDocFileName, renditionName,
+      parent, newVideoDoc;
+  
+  blobResult = null;
+  destination = params.destination;
+  inputBlob = params.blobToDispatch;
+  newDocFileName = params.newDocFileName;
+  renditionName = params.renditionName;
+    
+  switch(destination) {
+  case "download":
+    // Ok, we are done
+    blobResult = inputBlob;
+    break;
+  
+    case "files":
+    input = Document.SetBlob(input, {
+	  'file': inputBlob,
+	  'save': true,
+	  'xpath': "files:files"
+    });
+    blobResult = JSON.stringify({"result": "OK"});
+    break;
+  
+    case "renditions":
+    ctx.inputBlob = inputBlob;
+    input = javascript.videoUtils_AddToTranscodedVideos(
+      input, {
+        'blob': inputBlob,
+        'name': renditionName,
+        'save': true
+      });
+    blobResult = JSON.stringify({"result": "OK"});
+    break;
+  
+    case "newDoc":
+    parent = Document.GetParent(input, {});
+    newVideoDoc = Document.Create(parent, {
+	'type': "Video",
+	'name': newDocFileName,
+      'properties': {
+        "title": newDocFileName
+      }
+    });
+    newVideoDoc = Document.SetBlob(newVideoDoc, {
+	'file': inputBlob,
+	'save': true,
+      'xpath': "file:content"
+    });
+    
+    blobResult = JSON.stringify({
+      "docId": newVideoDoc.id,
+      "docPath": newVideoDoc.path
+    });
+    break;
+    
+  }
+  
+  return blobResult;
+
+}]]></script>
+      <param type="string" name="destination"/>
+      <param type="string" name="blobToDispatch"/>
+      <param type="string" name="renditionName"/>
+      <param type="string" name="newDocFileName"/>
+    </scriptedOperation>
+    <scriptedOperation id="javascript.videoUtils_FormatTimeString">
+      <inputType>void</inputType>
+      <outputType>void</outputType>
+      <category>javascript</category>
+      <description></description>
+      <script><![CDATA[// Receives a string as input, outputs a string
+// DEMO ONLY: Format only if the string is already HH:MM:SS. Replaces the ":" with "h", "m" and add "s" at the end
+function run(value, params) {
+  if(! value || typeof value !== "string") {
+    return "";
+  }
+  value = value.replace(":", "h").replace(":", "m") + "s";
+  value = value.replace("00h", "");
+  return value;
+}]]></script>
+    </scriptedOperation>
+    <scriptedOperation id="javascript.videoUtils_GetFileNameAndExtension">
+      <inputType>void</inputType>
+      <outputType>void</outputType>
+      <category>javascript</category>
+      <description></description>
+      <script><![CDATA[/* Receives the fileFullName parameter
+     Sets the results in Context Variable names,which have a 'gfne' prfix
+     to reduce the risk of collision in Context Var. Names in the
+     global, final chain:
+         - gfne_baseName
+         - gfne_fileExtension
+             The extension contains the "."
+
+     Examples:
+         my_file.mp' => "my_file" and ".mp4"
+         my.file.with.dots.avi => "my.file.with.dot" and ".avi"
+         my-file-no-extension => " my-file-no-extension" and ""
+   
+*/
+function run(input, params) {
+  
+  var fileFullName, pos, baseName, fileExtension;
+  
+  baseName = "";
+  fileExtension = "";
+  
+  if(typeof params.fileFullName === "string" && params.fileFullName !== "") {
+    fileFullName = params.fileFullName;
+    pos = fileFullName.lastIndexOf(".");
+    if(pos > -1) {
+      baseName = fileFullName.substring(0, pos);
+      fileExtension = fileFullName.substring(pos); // let's keep the "."
+    } else {
+      baseName = fileFullName;
+    }
+  }
+  
+  ctx.gfne_baseName = baseName;
+  ctx.gfne_fileExtension = fileExtension;
+
+}]]></script>
+      <param type="string" name="fileFullName"/>
+    </scriptedOperation>
+    <scriptedOperation id="javascript.videoUtils_GetVideoInfo">
+      <inputType>blob</inputType>
+      <outputType>blob</outputType>
+      <category>javascript</category>
+      <description></description>
+      <script><![CDATA[/* Get the VideoInfo of the Video blob, using Java glue for this purpose.
+
+     Receives a blob that must be a video.
+     Set the "javaVideoInfo" context variable, which is a org.nuxeo.ecm.platform.video.VideoInfo
+     (hence the "java" prefix, to make it very clear some JS functions will not work on it)
+     Returns the blob unchanged
+     
+     the javaVideoInfo Context variable contains all of the information required to fill a new entry
+     in the "info" field of an entry of the vid:transcodedVideos schema:
+         ctx.javaVideoInfo.width
+         ctx.javaVideoInfo.height
+         ctx.javaVideoInfo.format
+         ctx.javaVideoInfo.duration
+         ctx.javaVideoInfo.frameRate
+         ctx.javaVideoInfo.streams is an array of object. Each streem contains (example, for firt item):
+             ctx.javaVideoInfo.streams [0].type
+             ctx.javaVideoInfo.streams [0].codec
+             ctx.javaVideoInfo.streams [0].streamInfo
+             ctx.javaVideoInfo.streams [0].bitRate
+
+     Example:
+         // input is a Video document
+         blob = javascript.videoUtils_GetVideoInfo (blob, {});
+         var javaVideoInfo = ctx.javaVideoInfo;
+     
+     The code is centralized here in case implementation change (Fix it in one place)
+*/
+function run(blobInput, params) {
+  var videoInfo, SCRIPT;
+  
+  SCRIPT = "Context[\"javaVideoInfo\"] = org.nuxeo.ecm.platform.video.VideoHelper.getVideoInfo(Context[\"utils_GetVideoInfo_Video\"]);";
+  
+  // When using RunScript, from JS Automation, Context Variables must exist in the ctx Object
+  ctx.javaVideoInfo = null;
+  ctx.utils_GetVideoInfo_Video = blobInput;
+  RunScript(null, {'script': SCRIPT});
+  
+  return blobInput;
+  
+}]]></script>
+    </scriptedOperation>
+    <scriptedOperation id="javascript.videoUtils_README">
+      <inputType>void</inputType>
+      <outputType>void</outputType>
+      <category>javascript</category>
+      <description></description>
+      <script><![CDATA[/* (void script, used for README)
+
+These set of tools alow for miscellaneous operations on videos: Slice, convert, watermark and merge.
+
+These are for Nuxeo 9.10 minimal.
+
+===============================================================================
+IMPORTANT • IMPORTANT • IMPORTANT • IMPORTANT • IMPORTANT • IMPORTANT • IMPORTANT
+===============================================================================
+These tools are used for *demo* and learning  purpose,  we don't think they are not production-ready
+mainly because they run (from the UI) *synchrnously*. This makes it easier to show Video capabilities:
+You display a video, click the "Watermark video" button (for example) fill some values in the dialog
+and download the watermarked video. In demo, because you are doing it live, you want to use
+a _small_ video, so you don't wait 15mn some transcoding is done.
+
+In your final application, a click on the butotn would start an asynchronous job, so the user can continue
+working and will be notified once the watermarking is ready. Or maybe some custom rendition or
+slicing is done automatically and added to the "renditions" field, or in the context of a workflow,
+videos are merged, etc.
+===============================================================================
+
+
+===============================================================================
+Dependencies
+===============================================================================
+As the template uses the Video facet n some chain and UI filters, you must have nuxeo-dam installed
+on your server and configured in Studio. In Studio, go to Settings > Application Definition and in
+"Target Packages", make sure "DAM" is checked.
+
+
+===============================================================================
+What's in the template?
+===============================================================================
+This set of tools contains:
+    - Automation chains that perform the video handlings; Each chain has its own documentation
+       explaining how to use it, which parameters are expected, etc.
+    - Translation chains, bith as .properties file (for vocabularies) and .json file (for WebUI)
+        * (Only EN)
+    - An XML extension that defines converters and command lines
+    - A PageProvider used by the watermarking element
+    - And WebUI elements that per'form the actions
+
+There is naming convention to avoid collision with your existing configuration: Every object has a name
+that starts with "videoUtils". This also goes for translation labels. Talking abiout translation, we provide only
+an English set of files. You can easily add any language in both a .properties file and a .json file.
+
+Once installed (imported from the Studio External Templates), feel free to use and modify them as you wish.
+        For example, the nuxeo-document-suggestion element that lets the user select a Watermark
+        image in the repository uses a Page Provider that filters and displays only the Picture documents
+        which have a tag (not a field, a tag as in ecm:tag) containing "watermark". You may want to
+        change that, or to hard code the watermark image to use, etc.
+        
+        Another example is the "Creatye new document" destination. Maybe you want to hard code this value or
+        calculate it differently.)
+        
+A word on JS Automation Parameters: As of today (FEB 2018) when you add parameters to a JS Automation chain, you
+can only select the "String" type. But this is only UI display in Studio: Your parameter can actually be of any kind. For
+example, the javascript.videoUtils_AddToTranscodedVideos chain expects a blob and a boolean, and it's perfectly fine
+(even is in the "parameters" tab, they are declared as "string")
+
+
+===============================================================================
+Main Principles
+===============================================================================
+* At the core, there are JS automation chain:
+    - The one with "api" in their name are to be called from the client (here, WebUI)
+    - The others are utilities, used to DRY (Don't Repeat Yourself) as much as possible
+    - An XML extension declares converters used by the misc. chains
+    - Designer contains a "video-utils" folder with the elements. In the HTML you will see the elements
+        - Use translation
+        - Use the "api" chain
+        - Also centralize the behavior for the selected destination
+
+* In the UI and the "api" chain, besides the specific video handling (merge, clice, ...) there always is
+   a "destination" parameter, whose value is one of the videoUtils_Destination vocabulary. There are
+   4 possible destinations:
+       - Download: As its name state
+       - files: These are "attachments". The generated video is stored there (files:files schema)
+       - "rendition": The result video is added to the list of "Conversions"
+       - New doc: A new Video document is create in the same container as the current video
+           => WARNING: The chains don't check if the user has enough permissions to create a document
+                 in this container
+
+
+===============================================================================
+Installation in the UI
+===============================================================================
+This template does not provide the Slot contribution to the UI. This is on purpose: Maybe you want
+to use them in a custom element, not using the "UI" tab of Designer for example.
+
+If you want to use Designer and its "UI" tab (which is very convenient) then you must create new "actions"
+for the "BLOB_ACTIONS" slot with:
+    - A filter, set to check the element is instyalled only for document having the "Video" facet
+    - Use one of the video-... elements (one found in /Resources/Resources/video-utils)
+    - In the parameters, set "document" to [[document]] and xpath to [[xpath]]
+      These values are filled and passed by webUI
+
+Ultimately, you studio-projectid.bundle.html must have something like:
+<!-- Contribution of element 'video-slice' for slot 'BLOB_ACTIONS' -->
+<nuxeo-slot-content name="vuSlice" slot="BLOB_ACTIONS" >
+  <template>
+    <nuxeo-filter document="[[document]]" facet="Video">
+      <template>
+        <video-slice document="[[document]]" xpath="[[xpath]]"></video-slice>
+      </template>
+    </nuxeo-filter>
+  </template>
+</nuxeo-slot-content>
+*/
+function run(input, params) {
+
+}]]></script>
+    </scriptedOperation>
+    <scriptedOperation id="javascript.videoUtils_api_Merge">
+      <inputType>document</inputType>
+      <outputType>blob</outputType>
+      <category>javascript</category>
+      <description></description>
+      <script><![CDATA[/* Wrapper for the Video.Concat operation.
+     
+     * input is a Collection or a Folderish document
+           - If a Collection, the chain filters to keep only the Video and keep them
+             in the same order as they are stored in the collection
+           - If a Folderish, the chain gets the Video documents (first level) and order them by dc:title
+              before generating the merge.
+     
+     * Parameters:
+           - xpath: As used by the Video.Concat operation. Set to "file:content" by default
+           - destination: What to do with the sliced video => see below
+               
+      * output is a blob, whose value depends on the destination:
+          - The "destination parameter must be a value from the "videoUtils_Destination" vocabulary
+          - "download": The merged video blob to download
+          - "files":
+                  - ONLY IF the input document (Collection or Folderish) has the "files" schema
+                        - Else, an error is returned
+                  - The merged video is added to the files:files field
+                  - The return is string, JSON object with a "result" property set to "OK"
+          - "rendition":
+                  - ONLY IF the input document (Collection or Folderish) has the "video" schema
+                        - Else, an error is returned
+                  - The modified video is added to the vid:transcodedVideos field
+                  - The returned value is string, JSON object with a "result" property set to "OK"
+                  - The rendition name is set to the destination format and the max width/height
+                          Example: "AVI - max 250x250)"
+          - "newDoc":
+                  - The merged video is used to create a new Video Document
+                     at the same level as the input document
+                  - The returned value is a string, JSON object with a "docId" and a "docPath"
+                     properties, id/path of the newly created document
+      
+      In case an error detected _before_ performing the slice, a JSON object as string is returned containing
+      the videoUtilsError property. Client should check for this (see an example in ui/video-utils/video-merge.html)
+
+*/
+function run(input, params) {
+  
+  var folderOrCollection, i, max, nxql, videosDocs, videosDocsJS, docIds, videosUidMap,
+         blobResult, mergedVideo, xpath, destination, newVideoDoc, parent, renditionName, title;
+  
+  blobResult = null;
+  xpath = stringIsBlank(params.xpath) ? "file:content" : params.xpath;
+  destination = params.destination;
+  
+  // ========================================== Error check on the input and parameters
+  if(!input.hasFacet("Collection") && !input.hasFacet("Folderish")) {
+    Console.error( "api_Video_Merge : Not receiving a Collection or a Folderish");
+    return JSON.stringify({"videoUtilsError": "Input is not a Collection or a Folderish"});
+  }
+  
+  if(!destination) {
+    Console.error( "api_Video_Merge : No valid destination");
+    return JSON.stringify({"videoUtilsError": "No valid destination"});
+  }
+  
+  if(destination === "renditions" && !input.hasFacet("Video")) {
+    Console.error( "api_Video_Merge : Cannot save to renditions, input does not have the Video facet");
+    return JSON.stringify({"videoUtilsError": "Cannot save to renditions, input does not have the Video facet"});
+  }
+  
+  if(destination === "files" && !input.hasSchema("files")) {
+    Console.error( "api_Video_Merge : Cannot save to files, input does not have the files facet");
+    return JSON.stringify({"videoUtilsError": "Cannot save to files, input does not have the files facet"});
+  }
+  
+  // ========================================== Build an array of ordered videos to merge
+  videosDocsJS = [];
+  if(input.hasFacet("Collection")) {
+    docIds = input["collection:documentIds"];
+    nxql = "SELECT * FROM Document WHERE ecm:mixinType = 'Video' AND file:content/name IS NOT NULL AND ecm:isProxy = 0 AND ecm:isVersion = 0 AND collectionMember:collectionIds = '" + input.id + "' ";
+    videosDocs = Repository.Query(null, {"query": nxql});    
+    // Order as in the collection, so prepare a util object to make it easier
+    videosUidMap = [];
+    videosDocs.forEach(function(oneVideo) {
+      videosUidMap[oneVideo.id] = oneVideo;
+    });
+    max = docIds.length;
+    for(i = 0; i < max; ++i) {
+      if(videosUidMap[ docIds[i] ] !== null) {
+        videosDocsJS.push( videosUidMap[ docIds[i] ] );
+      }
+    }    
+  } else if (input.hasFacet("Folderish")) {
+    nxql = "SELECT * FROM Document WHERE ecm:mixinType = 'Video' AND file:content/name IS NOT NULL AND ecm:isProxy = 0 AND ecm:isVersion = 0 AND ecm:parentId = '" + input.id + "' ORDER BY dc:title";
+    videosDocs = Repository.Query(null, {"query": nxql});
+    videosDocs.forEach(function(oneVideo) {
+      videosDocsJS.push(oneVideo);
+    });
+    
+  }
+  
+  if(videosDocsJS.length < 1) {
+    Console.warn( "api_Video_Merge : No video to merge after filtering");
+    return JSON.stringify({"videoUtilsError": "No video to merge after filtering"});
+  }
+  
+  // ========================================== Merge
+  mergedVideo = Video.Concat(
+    videosDocsJS, {
+      'xpath': xpath
+    });
+  
+  /// ========================================== Handle destination
+  title = input.title + "-merged";
+  renditionName = input.title + "-merged";
+  blobResult = javascript.videoUtils_DispatchToDestination(
+    input, {
+      'destination': destination,
+      'blobToDispatch': mergedVideo,
+      'renditionName': renditionName,
+      'newDocFileName': title
+    });
+  
+  return blobResult;
+
+}
+
+function stringIsBlank(str) {
+  return typeof str !== "string" || str === "";
+}]]></script>
+      <param type="string" name="xpath"/>
+      <param type="string" name="destination"/>
+    </scriptedOperation>
+    <scriptedOperation id="javascript.videoUtils_api_OnDemandRendition">
+      <inputType>document</inputType>
+      <outputType>blob</outputType>
+      <category>javascript</category>
+      <description></description>
+      <script><![CDATA[/* Resize and convert a video (wrapper using th Blob.RunConverter operation)
+     Using converters declared in the XML extension "videoUtils_Conversions"
+     
+     * input is a document, with the Video facet and a non null  main blob
+     
+     * Parameters:
+           - maxHeight
+           - maxWidth
+           - format: An id from the videoUtils_Format vocabulary
+           - destination: What to do with the sliced video => see below
+               
+      * output is a blob, whose value depends on the destination:
+          - "download": The modified video blob to download
+          - "files":
+                  - The modified video is added to the files:files field
+                  - The return is string, JSON object with a "result" property set to "OK"
+          - "rendition":
+                  - The modified video is added to the vid:transcodedVideos field
+                  - The returned value is string, JSON object with a "result" property set to "OK"
+                  - The rendition name is set to the destination format and the max width/height
+                          Example: "AVI - max 250x250)"
+          - "newDoc":
+                  - The modified video is used to create a new Video Document
+                     at the same level as the input document
+                  - The returned value is a string, JSON object with a "docId" and a "docPath"
+                     properties, id/path of the newly created document
+      
+      In case and error detected _before_ performing the slice, a JSON object as string is retuend containing
+      the videoUtilsError property. Client should check for this (see an example in ui/video-utils/video-merge.html)
+
+*/
+function run(input, params) {
+  
+  var maxWidth, maxHeight, originalW, originalH, finalWH, blob,
+         fileExtension, destination, blobResult, videoInfo, baseName,
+         finalName, converter, converterTextParams, convertedBlob,
+         renditionName, newVideoDoc;
+  
+  blobResult = null;
+  
+  // ========================= Check input
+  if(!input.hasFacet("Video") || input["file:content"] === null) {
+    Console.warn( "api_Video_Slice: Not receiving a Video");
+    return JSON.stringify({"videoUtilsError": "Input is not a video document, or input blob is null"});
+  }
+  
+  // ========================= Get input blob
+  blob = input["file:content"];
+  javascript.videoUtils_GetFileNameAndExtension(null, {'fileFullName':  blob.filename});
+  baseName = ctx.gfne_baseName;
+  fileExtension = ctx.gfne_fileExtension;
+  
+  // ========================= Realign max width/height
+  videoInfo = input["vid:info"];
+  originalW = videoInfo.width;
+  originalH = videoInfo.height;
+  
+  maxWidth = params.maxWidth && params.maxWidth > 0 ? params.maxWidth : originalW;
+  maxHeight = params.maxHeight && params.maxHeight > 0 ? params.maxHeight : originalH;
+  
+  finalWH = calculateAspectRatioFit(originalW, originalH, maxWidth, maxHeight);
+  
+  // ========================= Handle format and final file name
+  if(typeof params.format === "string" && params.format !== "") {
+    fileExtension = "." + params.format;// see the videoUtils_Format  vocabulary
+  }
+  finalName = baseName + " - maxW " + maxWidth + "-maxH " + maxHeight + fileExtension;
+  renditionName = "";
+  switch(fileExtension.toLowerCase()) {
+    case ".mp4":
+      converter = "videoUtils-convertToMP4";
+      renditionName = "MP4";
+      break;
+      
+    case ".webm":
+      converter = "videoUtils-convertToWebM";
+      renditionName = "WebM";
+      break;
+      
+    case ".avi":
+      converter = "videoUtils-convertToAVI";
+      renditionName = "AVI";
+      break;
+  }
+  renditionName += " - max " + maxWidth + "x" + maxHeight;
+  
+  // ========================= Convert
+  converterTextParams = "width=" + maxWidth + "\nheight=" + maxHeight + "\ntargetFileName=" + finalName;
+  convertedBlob = Blob.RunConverter(
+    blob, {
+      'converter': converter,
+      'parameters': converterTextParams
+    });
+  convertedBlob.setFilename(finalName);
+  
+  // ========================= Handle destination
+  blobResult = javascript.videoUtils_DispatchToDestination(
+    input, {
+      'destination': destination,
+      'blobToDispatch': convertedBlob,
+      'renditionName': renditionName,
+      'newDocFileName': finalName
+    });
+  
+  return blobResult;
+
+}
+
+function calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
+
+    var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+    return { width: srcWidth*ratio, height: srcHeight*ratio };
+ }
+
+]]></script>
+      <param type="string" name="maxHeight"/>
+      <param type="string" name="maxWidth"/>
+      <param type="string" name="format"/>
+      <param type="string" name="destination"/>
+    </scriptedOperation>
+    <scriptedOperation id="javascript.videoUtils_api_Slice">
+      <inputType>document</inputType>
+      <outputType>blob</outputType>
+      <category>javascript</category>
+      <description></description>
+      <script><![CDATA[
+/* Wrapper for the Video.Slice operation:
+       - input is a document, with the Video facet and a non null blob in the xpath parameter ("file:content") by default)
+       - Parameters:
+           * Same as Video.Slice:
+               - startAt
+               - duration
+               - encode
+               - xpath
+           * destination: What to do with the sliced video => see below
+
+      The "destination" parameter must be a value from the "videoUtils_Destination" vocabulary
+      The return depends on the destination:
+          - download => the sliced video blob itself
+          - newDoc => a JSON string of an object with docId and docPath of the newly created document
+          - files => The return is string, JSON object with a "result" property set to "OK"
+          - renditions => The return is string, JSON object with a "result" property set to "OK"
+      
+      In case and error detected _before_ performing the slice, a JSON object as string is returned containing
+      the videoUtilsError property. Client should check for this (see an example in ui/video-utils/video-merge.html)
+ 
+      Also, Video.Slice can return a filename too complex. For example, when asked to start at 00:00:00
+      for a duration of 00:0:07, the file name can be someting like:
+                Rock Climbing - 925-0000-0000077727957485093461017sliced.mp4
+      
+      (notice ffmpeg accepts also a value in seconds, the formatting will apply but will basically do nothing)
+      => Just adding start/duration as received (removing ":")
+ */
+function run(input, params) {
+  
+  var startAt, duration, encode, xpath, destination, blob, blobResult,
+         fileName, baseName, fileExtension, pos, slicedVideo, parent,
+        renditionName, newVideoDoc;
+  
+  startAt = stringIsBlank(params.startAt) ? null : params.startAt;
+  duration = stringIsBlank(params.duration) ? null : params.duration;
+  xpath = stringIsBlank(params.xpath) ? "file:content" : params.xpath;
+  // See code for Video.Slice. Default value for encoding is true
+  encode = stringIsBlank(params.encode) ? true : params.encode.toLowerCase() === "true";
+  destination = stringIsBlank(params.destination) ? null : params.destination;
+  
+  if(!input.hasFacet("Video") || input[xpath] === null) {
+    Console.warn( "videoUtils_api_Slice : Not receiving a Video");
+    return JSON.stringify({"videoUtilsError": "Input is not a video document, or input blob is null"});
+  }
+  
+  baseName = "";
+  fileExtension = "";
+  blob = input[xpath];
+  javascript.videoUtils_GetFileNameAndExtension(null, {'fileFullName':  blob.filename});
+  fileName = ctx.gfne_baseName + "-sliced-s" + javascript.videoUtils_FormatTimeString(startAt, {}) + "-d" + javascript.videoUtils_FormatTimeString(duration, {}) + ctx.gfne_fileExtension;
+  renditionName = "Slice (start: " + startAt + ", duration: " + duration +")";
+  slicedVideo =  Video.Slice(
+    input, {
+      'duration': duration,
+      'encode': encode,
+      'startAt': startAt,
+      'xpath': xpath
+    });
+  slicedVideo.setFilename(fileName);
+  
+  blobResult = javascript.videoUtils_DispatchToDestination(
+    input, {
+      'destination': destination,
+      'blobToDispatch': slicedVideo,
+      'renditionName': renditionName,
+      'newDocFileName': fileName
+    });
+  
+  return blobResult;
+
+}
+
+function stringIsBlank(str) {
+  return typeof str !== "string" || str === "";
+}]]></script>
+      <param type="string" name="startAt"/>
+      <param type="string" name="duration"/>
+      <param type="string" name="xpath"/>
+      <param type="string" name="encode"/>
+      <param type="string" name="destination"/>
+    </scriptedOperation>
+    <scriptedOperation id="javascript.videoUtils_api_SliceInParts">
+      <inputType>document</inputType>
+      <outputType>blob</outputType>
+      <category>javascript</category>
+      <description></description>
+      <script><![CDATA[
+ /* Wrapper for the Video.SliceInParts operation
+ 
+       - input is a document, with the Video facet and a non null blob in the xpath parameter ("file:content" by default)
+       - Parameters:
+           * partDuration: The duration of each part
+           * xpath
+           * destination: What to do with the sliced video => see below
+
+      The "destination parameter must be a value from the "videoUtils_Destination" vocabulary
+      
+      The return depends on the destination:
+          - download => All parts ar zipped and the result zipp is doanloaded
+          - newDoc => a JSON string of an object with docId and docPath of the newly created Folder, that contains the slices
+          - files => The return is string, JSON object with a "result" property set to "OK"
+          - renditions => The return is string, JSON object with a "result" property set to "OK"
+      
+      In case and error detected _before_ performing the slice, a JSON object as string is retuend containing
+      the videoUtilsError property. Client should check for this (see an example in ui/video-utils/video-merge.html)
+      
+      (notice ffmpeg accepts also a value in seconds, the formatting will apply but will basically do nothing)
+      
+ */
+function run(input, params) {
+  
+  var partDuration, partDurationFormatted, encode, xpath, destination, blob, blobResult,
+         fileName, baseName, fileExtension, pos, slicedVideos, oneVideo, parent,
+        renditionName, newVideoDoc, i, max, folder;
+  
+  partDuration = stringIsBlank(params.partDuration) ? null : params.partDuration;
+  xpath = stringIsBlank(params.xpath) ? "file:content" : params.xpath;
+  destination = stringIsBlank(params.destination) ? null : params.destination;
+  
+  if(!input.hasFacet("Video") || input[xpath] === null) {
+    Console.warn( "videoUtils_api_SliceInParts : Not receiving a Video");
+    return JSON.stringify({"videoUtilsError": "Input is not a video document, or input blob is null"});
+  }
+  
+  baseName = "";
+  fileExtension = "";
+  blob = input[xpath];
+  javascript.videoUtils_GetFileNameAndExtension(null, {'fileFullName':  blob.filename});
+  
+  partDurationFormatted =  javascript.videoUtils_FormatTimeString(partDuration, {}) ;
+  fileName = ctx.gfne_baseName + "-sliced-" + partDurationFormatted + "-INDEX" + ctx.gfne_fileExtension;
+  renditionName = "Slice/" + partDurationFormatted +" - INDEX";
+  
+  slicedVideos =  Video.SliceInParts(
+    input, {
+      'duration': partDuration,
+      'xpath': xpath
+    });
+  max = slicedVideos.size();
+  
+  switch(destination) {
+  case "download":
+      // Ok, we are done
+      blobResult = Blob.CreateZip(
+        slicedVideos, {
+          'filename': ctx.gfne_baseName + "-sliced-" + partDuration.replace(/:/g, "") + ".zip"
+        });
+      break;
+  
+    case "files":
+      for(i = 0; i < max; ++i) {
+        oneVideo = slicedVideos.get(i);
+        oneVideo.setFilename(fileName.replace("INDEX", "" + (i + 1)));
+        input = Document.SetBlob(input, {
+          'file': oneVideo,
+	  'save': true,
+	  'xpath': "files:files"
+        });
+      }
+      blobResult = JSON.stringify({"result": "OK"});
+      break;
+  
+    case "renditions":
+      for(i = 0; i < max; ++i) {
+        oneVideo = slicedVideos.get(i);
+        oneVideo.setFilename(fileName.replace("INDEX", "" + (i + 1)));
+        ctx.slicedVideo = oneVideo;
+        input = javascript.videoUtils_AddToTranscodedVideos(
+          input, {
+            'blobVarName': "slicedVideo",
+            'name': renditionName.replace("INDEX", "" + (i + 1)),
+            'save': "false" 
+          });
+      }
+      input = Document.Save(input, {});
+      blobResult = JSON.stringify({"result": "OK"});
+      break;
+  
+    case "newDoc":
+      parent = Document.GetParent(input, {});
+      folder = Document.Create(parent, {
+	'type': "Folder",
+	'name': input.title + " (Sliced)",
+        'properties': {
+          "title": input.title + " (Sliced)"
+        }
+      });
+      
+      for(i = 0; i < max; ++i) {
+        oneVideo = slicedVideos.get(i);
+        oneVideo.setFilename(fileName.replace("INDEX", "" + (i + 1)));
+        newVideoDoc = Document.Create(folder, {
+	  'type': "Video",
+          'name': oneVideo.filename,
+          'properties': {
+            "title": oneVideo.filename
+          }
+        });
+        newVideoDoc = Document.SetBlob(newVideoDoc, {
+          'file': oneVideo,
+          'save': true,
+          'xpath': "file:content"
+        });
+      }
+      
+      blobResult = JSON.stringify({
+        "docId": folder.id,
+        "docPath": folder.path
+      });
+      break;
+      
+  }
+  
+  return blobResult;
+
+}
+
+function stringIsBlank(str) {
+  return typeof str !== "string" || str === "";
+}
+
+function timeStringLooksNotZero(value) {
+  var times, x, y, z;
+  
+  if(!value) {
+    return false;
+  }
+  times = value.split(":");
+  times.reverse();
+  x = times.length;
+  y = 0;
+  for (i = 0; i < x; ++i) {
+    z = times[i] * Math.pow(60, i);
+    y += z;
+  }
+  if(isNaN(y)) {
+    return false;
+  }
+  return y !== 0;
+}
+]]></script>
+      <param type="string" name="partDuration"/>
+      <param type="string" name="xpath"/>
+      <param type="string" name="destination"/>
+    </scriptedOperation>
+    <scriptedOperation id="javascript.videoUtils_api_Watermark">
+      <inputType>document</inputType>
+      <outputType>blob</outputType>
+      <category>javascript</category>
+      <description></description>
+      <script><![CDATA[
+ /* Wrapper for the Video.AddWatermark operation,
+ 
+      * input is a document, with the Video facet and a non null  main blob
+      
+      * Parameters
+          - watermarkDocRef: The ID or the path of a document whose file:content is the watermark image to apply
+          - posX : The horizontal position of the image in the video
+          - posY : The vertical position of the image in the video
+          - destination: What to do with the watermarked video
+               IMPORTANT: destination is the ID of the chosen item in the videoUtils_Destination vocabulary)
+               
+      * output is a blob, whose value depends on the destination:
+          - "download": The watermarked blob to download
+          - "files":
+                  - The watermarked video is added to the files:files field
+                  - The return is string, JSON object with a "result" property set to "OK"
+          - "rendition":
+                  - The watermarked video is added to the vid:transcodedVideos field
+                  - The returned value is string, JSON object with a "result" property set to "OK"
+                  - The rendition name is set to "Watermark - {imageTitle} (at {x}x{y})"
+                          Example: "Watermark - Nuxeo-Logo (at 50x50)"
+          - "newDoc":
+                  - The watermarked video is used to create a new Video Document
+                     at the same level as the input document
+                  - The returned value is a string, JSON object with a "docId" and a "docPath"
+                     properties, id/path of the newly created document
+      
+      In case and error detected _before_ performing the slice, a JSON object as string is retuend containing
+      the videoUtilsError property. Client should check for this (see an example in ui/video-utils/video-merge.html)
+ */
+var MARGIN = 10;
+function run(input, params) {
+  
+  var watermarkDocRef, x, y, destination, watermarkDoc,
+         imageW, imageH, videoW, videoH, position, blob, blobResult,
+         fileName, baseName, fileExtension, pos, watermarkedVideo, parent,
+        renditionName, newVideoDoc;
+  
+  // ============================================ Get/Check parameters
+  if(!input.hasFacet("Video") || input["file:content"] === null) {
+    Console.warn( "videoUtils_api_Watermark : Not receiving a Video");
+    return JSON.stringify({"videoUtilsError": "videoUtils_api_Watermark : Input is not a video document, or input blob is null"});
+  }
+  
+  watermarkDocRef = stringIsBlank(params.watermarkDocRef) ? null : params.watermarkDocRef;
+  if(watermarkDocRef === null) {
+    Console.warn( "videoUtils_api_Watermark : No watermark document");
+    return JSON.stringify({"videoUtilsError": "videoUtils_api_Watermark : No watermark document"});
+  }
+  watermarkDoc = Repository.GetDocument(null, {'value': watermarkDocRef});
+  if(watermarkDoc === null) {
+    //Actually, if watermarkDocRef is invalid, Repository.GetDocument throws an error, we will
+    //not be here anyway :-)
+    Console.warn( "videoUtils_api_Watermark : watermarkDoc ref " + watermarkDocRef + " not found");
+    return JSON.stringify({"videoUtilsError": "videoUtils_api_Watermark : watermarkDoc ref " + watermarkDocRef + " not found"});
+  }
+
+  x = stringIsBlank(params.posX) ? "0" : params.posX;
+  y = stringIsBlank(params.posY) ? "0" : params.posY;
+  destination = params.destination ? params.destination : "";
+  position = params.position ? params.position : "";
+  
+  baseName = "";
+  fileExtension = "";
+  blob = input["file:content"];
+  
+  javascript.videoUtils_GetFileNameAndExtension(null, {'fileFullName':  blob.filename});
+  fileName = ctx.gfne_baseName + "-WM-" + x + "x" + y + ctx.gfne_fileExtension;
+  
+  // Calculate x-y if needed
+    Console.log("POSITION: " + position);
+  if(position !== "Custom") { // ID of the "Custom" item in the VideoTransformation_WatermarkPosition vocabulary
+    imageW = watermarkDoc["picture:info"].width;
+    imageH = watermarkDoc["picture:info"].height;
+    videoW = input["vid:info"].width;
+    videoH = input["vid:info"].height;
+    //Console.log("" + imageW + "x" + imageH + ", " + videoW + "x" + videoH);
+    switch (position) {
+      case "Top-Left":
+        x = MARGIN;
+        y = MARGIN;
+        break;
+        
+      case "Top-Right":
+        x = videoW - imageW - MARGIN;
+        y = MARGIN;
+        break;
+        
+      case "Bottom-Left":
+        x = MARGIN;
+        y = videoH - imageH - MARGIN;
+        break;
+        
+      case "Bottom-Right":
+        x = videoW - imageW - MARGIN;
+        y = videoH - imageH - MARGIN;
+        break;
+    }
+  }
+  renditionName = "Watermark - " + watermarkDoc.title + " (at " + x + "x" + y + ")";
+  
+  // Integers must be converted to Strings during the JS automation call
+  watermarkedVideo = Video.AddWatermark(
+    input, {
+      'watermark': watermarkDocRef,
+      'x': "" + x,
+      'y': "" + y,
+      'xpath': "file:content"
+    });
+  watermarkedVideo.setFilename(fileName);
+  
+  blobResult = javascript.videoUtils_DispatchToDestination(
+    input, {
+      'destination': destination,
+      'blobToDispatch': watermarkedVideo,
+      'renditionName': renditionName,
+      'newDocFileName': fileName
+    });
+  
+  return blobResult;
+
+}
+
+function stringIsBlank(str) {
+  return typeof str !== "string" || str === "";
+}]]></script>
+      <param type="string" name="posX"/>
+      <param type="string" name="posY"/>
+      <param type="string" name="watermarkDocRef"/>
+      <param type="string" name="destination"/>
+      <param type="string" name="position"/>
+    </scriptedOperation>
+  </extension>
+  <extension target="org.nuxeo.ecm.platform.content.template.service.ContentTemplateService" point="factoryBinding">
+    <factoryBinding name="DomainFactory" factoryName="SimpleTemplateFactory" targetType="Domain">
+      <template>
+        <templateItem typeName="WorkspaceRoot" id="workspaces" title="Workspaces" description="Use Nuxeo Studio to adapt the domain automated structure (Content Model &gt; Structure Templates &gt; DomainFactory)"/>
+        <templateItem typeName="SectionRoot" id="sections" title="Sections" description="You can modify this automatically built structure from Studio: Content Model &gt; Structure Templates &gt; DomainFactory"/>
+        <templateItem typeName="TemplateRoot" id="templates" title="Templates" description="Workspace Templates Root"/>
+      </template>
+    </factoryBinding>
+  </extension>
+  <extension target="org.nuxeo.ecm.directory.GenericDirectory" point="directories">
+    <directory name="myVocabulary" extends="template-vocabulary">
+      <autoincrementIdField>false</autoincrementIdField>
+      <createTablePolicy>on_missing_columns</createTablePolicy>
+      <table>studio_vocabulary_myVocabulary</table>
+      <dataFile>data/vocabularies/myVocabulary.csv</dataFile>
+      <cacheEntryName>vocab-myVocabulary-cache</cacheEntryName>
+      <cacheEntryWithoutReferencesName>vocab-myVocabulary-cache-without-references</cacheEntryWithoutReferencesName>
+    </directory>
+    <directory name="qualityDocument" extends="template-vocabulary">
+      <autoincrementIdField>false</autoincrementIdField>
+      <createTablePolicy>on_missing_columns</createTablePolicy>
+      <table>studio_vocabulary_qualityDocument</table>
+      <dataFile>data/vocabularies/qualityDocument.csv</dataFile>
+      <cacheEntryName>vocab-qualityDocument-cache</cacheEntryName>
+      <cacheEntryWithoutReferencesName>vocab-qualityDocument-cache-without-references</cacheEntryWithoutReferencesName>
+    </directory>
+    <directory name="videoUtils_Destination" extends="template-vocabulary">
+      <autoincrementIdField>false</autoincrementIdField>
+      <createTablePolicy>on_missing_columns</createTablePolicy>
+      <table>studio_vocabulary_videoUtils_Destination</table>
+      <dataFile>data/vocabularies/videoUtils_Destination.csv</dataFile>
+      <cacheEntryName>vocab-videoUtils_Destination-cache</cacheEntryName>
+      <cacheEntryWithoutReferencesName>vocab-videoUtils_Destination-cache-without-references</cacheEntryWithoutReferencesName>
+    </directory>
+    <directory name="videoUtils_Format" extends="template-vocabulary">
+      <autoincrementIdField>false</autoincrementIdField>
+      <createTablePolicy>on_missing_columns</createTablePolicy>
+      <table>studio_vocabulary_videoUtils_Format</table>
+      <dataFile>data/vocabularies/videoUtils_Format.csv</dataFile>
+      <cacheEntryName>vocab-videoUtils_Format-cache</cacheEntryName>
+      <cacheEntryWithoutReferencesName>vocab-videoUtils_Format-cache-without-references</cacheEntryWithoutReferencesName>
+    </directory>
+    <directory name="videoUtils_WatermarkPosition" extends="template-vocabulary">
+      <autoincrementIdField>false</autoincrementIdField>
+      <createTablePolicy>on_missing_columns</createTablePolicy>
+      <table>studio_vocabulary_videoUtils_WatermarkPosition</table>
+      <dataFile>data/vocabularies/videoUtils_WatermarkPosition.csv</dataFile>
+      <cacheEntryName>vocab-videoUtils_WatermarkPosition-cache</cacheEntryName>
+      <cacheEntryWithoutReferencesName>vocab-videoUtils_WatermarkPosition-cache-without-references</cacheEntryWithoutReferencesName>
+    </directory>
+  </extension>
+  <extension target="org.nuxeo.ecm.core.cache.CacheService" point="caches">
+    <cache name="vocab-myVocabulary-cache">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-myVocabulary-cache-without-references">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-qualityDocument-cache">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-qualityDocument-cache-without-references">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-videoUtils_Destination-cache">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-videoUtils_Destination-cache-without-references">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-videoUtils_Format-cache">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-videoUtils_Format-cache-without-references">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-videoUtils_WatermarkPosition-cache">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-videoUtils_WatermarkPosition-cache-without-references">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+  </extension>
+  <extension target="org.nuxeo.ecm.platform.commandline.executor.service.CommandLineExecutorComponent" point="command">
+
+  
+    <command name="videoUtils-ffmpeg-tomp4" enabled="true">
+    
+      <commandLine>ffmpeg</commandLine>
+    
+      <parameterString> -i #{sourceFilePath} -s #{width}x#{height} -acodec libfaac -vcodec libx264 -v 0 #{targetFilePath}</parameterString>
+    
+      <winParameterString> -i #{sourceFilePath} -s #{width}x#{height} -vcodec libx264 -v 0 #{targetFilePath}</winParameterString>
+    
+      <installationDirective>You need to install ffmpeg from http://ffmpeg.org (apt-get install ffmpeg)
+    </installationDirective>
+  
+    </command>
+  
+  
+    <command name="videoUtils-ffmpeg-towebm" enabled="true">
+    
+      <commandLine>ffmpeg</commandLine>
+    
+      <parameterString> -i #{sourceFilePath} -s #{width}x#{height} -acodec libvorbis -v 0 #{targetFilePath}</parameterString>
+    
+      <installationDirective>You need to install ffmpeg from http://ffmpeg.org (apt-get install ffmpeg)
+    </installationDirective>
+  
+    </command>
+  
+  
+    <command name="videoUtils-ffmpeg-toavi" enabled="true">
+    
+      <commandLine>ffmpeg</commandLine>
+    
+      <parameterString> -i #{sourceFilePath} -s #{width}x#{height} -q:v 0 -c:v mpeg4 -c:a ac3 #{targetFilePath}</parameterString>
+    
+      <installationDirective>You need to install ffmpeg.
+    </installationDirective>
+  
+    </command>
+
+  
+    <command name="videoUtils-ffmpegExtractOneFrame" enabled="true">
+    
+      <commandLine>ffmpeg</commandLine>
+    
+      <parameterString>-y -ss #{position} -i #{sourceFilePath} -vframes 1 -f image2 #{targetFilePath}</parameterString>
+    
+      <installationDirective>You need to install ffmpeg.
+    </installationDirective>
+  
+    </command>
+
+  
+    <!-- Basic conversion, no specific parameters to tune the conversion -->
+  
+    <command name="videoUtils-ffmpeg-Scale" enabled="true">
+    
+      <commandLine>ffmpeg</commandLine>
+    
+      <parameterString> -i #{inFilePath} -vf scale#{width}:#{heigth} #{outFilePath}</parameterString>
+    
+      <installationDirective>You need to install FFmpeg from http://ffmpeg.org</installationDirective>
+  
+    </command>
+  </extension>  <extension target="org.nuxeo.ecm.core.convert.service.ConversionServiceImpl" point="converter">
+  
+    <converter name="videoUtils-convertToMP4" class="org.nuxeo.ecm.platform.convert.plugins.CommandLineConverter">
+    
+      <sourceMimeType>video/mpeg</sourceMimeType>
+    
+      <sourceMimeType>video/webm</sourceMimeType>
+    
+      <sourceMimeType>video/quicktime</sourceMimeType>
+    
+      <sourceMimeType>video/ogg</sourceMimeType>
+    
+      <sourceMimeType>video/x-ms-asf</sourceMimeType>
+    
+      <sourceMimeType>video/x-msvideo</sourceMimeType>
+    
+      <sourceMimeType>video/flv</sourceMimeType>
+    
+      <destinationMimeType>video/mp4</destinationMimeType>
+    
+      <parameters>
+      
+        <parameter name="CommandLineName">videoUtils-ffmpeg-tomp4</parameter>
+      
+        <parameter name="videoMimeType">video/mp4</parameter>
+      
+        <parameter name="videoExtension">mp4</parameter>
+      
+        <parameter name="tmpDirectoryPrefix">videoUtils-convertToMP4</parameter>
+    
+      </parameters>
+    
+    </converter>
+  
+  
+    <converter name="videoUtils-convertToWebM" class="org.nuxeo.ecm.platform.convert.plugins.CommandLineConverter">
+    
+      <sourceMimeType>video/mpeg</sourceMimeType>
+    
+      <sourceMimeType>video/mp4</sourceMimeType>
+    
+      <sourceMimeType>video/quicktime</sourceMimeType>
+    
+      <sourceMimeType>video/ogg</sourceMimeType>
+    
+      <sourceMimeType>video/x-ms-asf</sourceMimeType>
+    
+      <sourceMimeType>video/x-msvideo</sourceMimeType>
+    
+      <sourceMimeType>video/flv</sourceMimeType>
+    
+      <destinationMimeType>video/webm</destinationMimeType>
+    
+      <parameters>
+      
+        <parameter name="CommandLineName">videoUtils-ffmpeg-towebm</parameter>
+      
+        <parameter name="videoMimeType">video/webm</parameter>
+      
+        <parameter name="videoExtension">webm</parameter>
+      
+        <parameter name="tmpDirectoryPrefix">videoUtils-convertToWebM</parameter>
+    
+      </parameters>
+    
+    </converter>
+  
+  
+    <converter name="videoUtils-convertToAVI" class="org.nuxeo.ecm.platform.convert.plugins.CommandLineConverter">
+    
+      <sourceMimeType>video/mpeg</sourceMimeType>
+    
+      <sourceMimeType>video/mp4</sourceMimeType>
+    
+      <sourceMimeType>video/quicktime</sourceMimeType>
+    
+      <sourceMimeType>video/ogg</sourceMimeType>
+    
+      <sourceMimeType>video/x-ms-asf</sourceMimeType>
+    
+      <sourceMimeType>video/x-msvideo</sourceMimeType>
+    
+      <sourceMimeType>video/flv</sourceMimeType>
+    
+      <destinationMimeType>video/x-msvideo</destinationMimeType>
+    
+      <parameters>
+      
+        <parameter name="CommandLineName">videoUtils-ffmpeg-toavi</parameter>
+      
+        <parameter name="videoMimeType">video/x-msvideo</parameter>
+      
+        <parameter name="videoExtension">avi</parameter>
+      
+        <parameter name="tmpDirectoryPrefix">videoUtils-convertToAVI</parameter>
+    
+      </parameters>
+    
+    </converter>
+  
+
+  
+    <converter name="videoUtils-ffmpegExtractOneFrame" class="org.nuxeo.ecm.platform.convert.plugins.CommandLineConverter">
+    
+      <parameters>
+      
+        <parameter name="CommandLineName">videoUtils-ffmpegExtractOneFrame</parameter>
+    
+      </parameters>
+  
+    </converter>
+
+  
+    <converter name="videoUtils-ffmpeg-Scale" class="org.nuxeo.ecm.platform.convert.plugins.CommandLineConverter">
+    
+      <parameters>
+      
+        <parameter name="CommandLineName">videoUtils-ffmpeg-Scale</parameter>
+    
+      </parameters>
+  
+    </converter>
+  </extension>  <extension target="org.nuxeo.ecm.platform.WebResources" point="resources">    <resource name="nuxeo-customizedwidget-1995-bundle.html" type="import" shrinkable="false">      <uri>/ui/nuxeo-customizedwidget-1995-bundle.html</uri>
+    </resource>
+  </extension>
+  <extension target="org.nuxeo.ecm.platform.WebResources" point="bundles">
+    <bundle name="web-ui">
+      <resources append="true">
+        <resource>nuxeo-customizedwidget-1995-bundle.html</resource>
+      </resources>
+    </bundle>
+  </extension>
+  <extension target="org.nuxeo.ecm.platform.actions.ActionService" point="filters">
+    <filter id="create" append="true">
+      <rule grant="false">
+        <type>Contact</type>
+        <type>Domain</type>
+        <type>File</type>
+        <type>QualityDocument</type>
+        <type>nuxeo-wabtec-share</type>
+      </rule>
+    </filter>
+  </extension>
+</component>

@@ -1,0 +1,10 @@
+{
+  "label.document.type.qualitydocument": "type.DocumentQuality",
+  "label.document.type.nuxeo-wabtec-share": "nuxeo-wabtec-share",
+  "label.document.type.domain": "Domain",
+  "label.document.type.contact": "Contact",
+  "label.document.type.file": "File",
+  "label.ui.aggregate.from_now-24H_to_now": "label.aggregate.yesterday",
+  "label.ui.aggregate.from_now-1M_to_now": "label.aggregate.lastMonth",
+  "label.ui.aggregate.from_now-7d_to_now": "Forcasted review Date"
+}

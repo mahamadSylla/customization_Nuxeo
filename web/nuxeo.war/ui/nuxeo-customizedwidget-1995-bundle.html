@@ -1,0 +1,25 @@
+<!--
+***
+STUDIO CODE SPACE
+***
+Studio will use this file to generate your configuration.
+You may tweak it, but note that any configuration seen as invalid by Studio will automatically be removed.
+
+Should you wish to add custom code, we recommend using the nuxeo-customizedwidget-1995-custom-bundle.html file instead.
+-->
+
+<link rel="import" href="nuxeo-NuxeoDMDefaultConfiguration_nux-bundle.html">
+<link rel="import" href="nuxeo-document-actions.html">
+<!-- Contribution of element 'nuxeo-menu-icon' for slot 'DRAWER_ITEMS' -->
+<nuxeo-slot-content name="SearchQD" slot="DRAWER_ITEMS" order="1">
+  <template>
+    <nuxeo-menu-icon label="Search Quality Document" name="searchqd" icon="icons:search"></nuxeo-menu-icon>
+  </template>
+</nuxeo-slot-content>
+<!-- Contribution of element 'nuxeo-search-form' for slot 'DRAWER_PAGES' -->
+<nuxeo-slot-content name="SearchQD" slot="DRAWER_PAGES">
+  <template>
+    <nuxeo-search-form provider="RechercheGlobale" schemas="qualityDocument" search-name="rechercheglobale" name="searchqd" params="{&quot;qualityDocument_applicationDate_max&quot;:&quot;&quot;,&quot;qualityDocument_isManuallyCreated&quot;:&quot;&quot;,&quot;qualityDocument_applicationDate_min&quot;:&quot;&quot;}"></nuxeo-search-form>
+  </template>
+</nuxeo-slot-content>
+

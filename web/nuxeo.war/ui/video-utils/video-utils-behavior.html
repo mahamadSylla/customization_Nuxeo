@@ -1,0 +1,197 @@
+
+<!--
+(C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Contributors:
+Thibaud Arguillere
+-->
+<!--
+`video-utils-behavior`
+@group Nuxeo UI
+-->
+<!--
+Centralizing utilities to avoid duplicating them in every files (slice, watermark, ...)
+-->
+<script>
+  window.Nuxeo = window.Nuxeo || {};
+  Nuxeo.VideoUtilsBehavior = {
+    behaviors: [Nuxeo.LayoutBehavior],
+    properties: {
+      timerStart: Date,
+
+      MINIMUM_DURATION: {
+        type: Number,
+        value: 2000
+      }
+    },
+    
+    /* Centralize the generation of a text containing the video infos
+    */
+    getVideoInfo: function(doc) {
+      let info = "";
+      if(doc && doc.properties && doc.properties["vid:info"]) {
+        let vidInfo = doc.properties["vid:info"];
+        info = this.i18n('videoUtils.label.duration') + vidInfo.duration + ", " + this.i18n('videoUtils.label.dimensions') + vidInfo.width + "x" + vidInfo.height;
+      }
+      return info;
+    },
+
+    /* Simple test to be used inside a <template is="dom-if"...> template to show
+     * a button only if the current blob is the main blob (hide button for éattachments"
+     * for example):
+     *       <template is="dom-if" if="[[xpathIsMainBlob(xpath)]]">
+     *         . . .
+     */
+    xpathIsMainBlob: function(xpath) {
+      return xpath === "file:content";
+    },
+
+    /* Assumes we are using the VideoTransformation_Destination vocabulary
+     *
+     * < 9.10 (LTS2017)
+     * When initializing the suggestion widget, you _sometime_ need to pass a
+     * directoryEntry object (when the user modifies it, it becomes a simple string)
+     */
+    getDefaultDestination: function(asObject) {
+
+      if(asObject) {
+        return {
+          "entity-type": "directoryEntry",
+          "directoryName": "VideoTransformation_Destination",
+          "properties": {
+            "id": "download",
+            "obsolete": "0",
+            "ordering": "0",
+            "label": "video.tools.destination.download"
+          }
+        }
+      }
+
+      return "download";
+    },
+
+    /* When using a suggestion widget with a vocabulary, depending on the enrichers set
+     * in the call and other settings, the value bound to the widget can be just the id
+     * (a string), or the DirectoryEntry.
+     */
+    getVocabularyEntryId: function(value) {
+      if(typeof value === "string") {
+        return value;
+      }
+      // Not a string, most likely a DirectoryEntry
+      return value.properties.id;
+    },
+
+    /* Starts a timer and handles UI objects:
+     *   - Show the progress
+     *   - Disable the Ok and the Cancel buttons
+     *
+     * It expects the progress to be embedded in a div which has an inline style, like
+     * <div style="display=[[theProperty]]">, whose initial value is set to "none"
+     */
+    progressShow: function(stylePropertyName, cancelButtonId, okButtonId) {
+      this.timerStart = Date.now();
+
+      this.set(stylePropertyName, "flex");
+      this.$[cancelButtonId].disabled = true;
+      this.$[cancelButtonId].okButtonId = true;
+    },
+
+    /* Hides the progress and handles the result.
+     * It makes sure the progress is displyaed for at least this.MINIMUM_DURATION milliseconds
+     * to avoid showing then immediately hidding the progress (confusing for the user)
+     */
+    progressStopNormal: function(stylePropertyName, dialogId, destination, result) {
+
+      let intervall, ellapsed;
+
+      ellapsed = Date.now() - this.timerStart;
+      if(ellapsed > this.MINIMUM_DURATION) {
+        intervall = 10;
+      } else {
+        intervall = this.MINIMUM_DURATION - ellapsed
+      }
+
+      window.setTimeout(function() {
+        this.set(stylePropertyName, "none");
+        this.handleDestination(destination, result);
+        this.$[dialogId].close();
+
+      }.bind(this), intervall);
+    },
+
+    /* Handles an error occuring during the operation call:
+     *   - Hide UI element, close the dialog
+     *   - Display the error
+     */
+    progressStopOnError: function(stylePropertyName, dialogId, error) {
+      this.set(stylePropertyName, "none");
+      this.$[dialogId].close();
+      // Could be made nicer :-)
+      alert(error);
+    },
+    
+    /* Handles the result of the operation depending on the destination.
+     * Assumes that:
+     *   - destination is a value from the VideoTransformation_Destination vocabulary
+     *   - The operation that was called return the correct value depending on the destination
+     *     ("return blob" for download, return a JSON string with an object with the id or path
+     *      of the document to navigate to when a new doc was created, ...)
+     */
+    handleDestination: function(destination, operationResult) {
+      let resultJson;
+
+      switch(destination) {
+      case "download":
+        this.downloadFile(operationResult);
+        break;
+
+      case "files":
+      case "renditions":
+        this.fire('document-updated');
+        break;
+
+      case "newDoc":
+        resultJson = JSON.parse(operationResult.value);
+        window.location.href = "#!/doc/" + resultJson.docId;
+        break;
+      }
+    },
+
+    /* Internal utility, still, exposed globally because it can be useful
+     * WARNING: In this context, operationResutl is a blob as returned by
+     * an operation (like a simple return theBlob;)
+     */
+    downloadFile: function(operationResult) {
+        let contentDisposition = operationResult.headers.get('Content-Disposition');
+        let filenameMatches = contentDisposition
+                                .match(/filename[^;=\n]*=([^;\n]*''([^;\n]*)|[^;\n]*)/)
+                                .filter(function(match) {
+                                return !!match;
+                              });
+        let filename = decodeURI(filenameMatches[filenameMatches.length - 1]);
+        operationResult.blob()
+              .then(function(blob) {
+          let a = document.createElement('a');
+          a.style = 'display: none';
+          a.download = filename;
+          a.href = URL.createObjectURL(blob);
+          a.click();
+          URL.revokeObjectURL(a.href);
+        });
+      }
+
+  }
+</script>

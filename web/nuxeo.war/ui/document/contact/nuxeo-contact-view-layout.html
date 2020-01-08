@@ -1,0 +1,59 @@
+<!--
+`nuxeo-contact-view-layout`
+@group Nuxeo UI
+@element nuxeo-contact-view-layout
+-->
+<dom-module id="nuxeo-contact-view-layout">
+  <template>
+    <style>
+      *[role=widget] {
+        padding: 5px;
+      }
+    </style>
+		
+    <div role="widget"><label>Prenom</label><div>[[document.properties.contact:Prenom]]</div>
+    </div>
+
+    <div role="widget"><label>Nom</label><div>[[document.properties.contact:Nom]]</div>
+    </div>
+
+    <div role="widget"><label>Email</label><div>[[document.properties.contact:Email]]</div>
+    </div>
+
+    <div role="widget"><label>Entreprise</label><div>[[document.properties.contact:Entreprise]]</div>
+    </div>
+
+    <nuxeo-data-table role="widget" items="{{document.properties.contact:Groupe}}" label="Groupes">
+
+
+      <nuxeo-data-table-column name="Groupe">
+        <template>
+          [[item]]
+        </template>
+      </nuxeo-data-table-column>
+
+      <nuxeo-data-table-form>
+        <template>
+          <nuxeo-input value="{{item}}" label="Groupe" type="text"></nuxeo-input>
+        </template>
+      </nuxeo-data-table-form>
+    </nuxeo-data-table>
+  </template>
+
+  <script>
+  Polymer({
+    is: 'nuxeo-contact-view-layout',
+    behaviors: [Nuxeo.LayoutBehavior],
+    properties: {
+
+      /**
+         * @doctype Contact
+         */
+      document: {
+        type: Object,
+      },
+
+    }
+  });
+  </script>
+</dom-module>

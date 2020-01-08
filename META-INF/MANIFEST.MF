@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: studio.extensions.customizedwidget-1995
+Bundle-Version: 1.0.0
+Bundle-Name: Nuxeo Studio Extension - studio.extensions.customizedwidg
+ et-1995
+Require-Bundle: org.nuxeo.runtime
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Nuxeo
+Nuxeo-Component: OSGI-INF/extensions.xml
+Created-By: Nuxeo Studio
+

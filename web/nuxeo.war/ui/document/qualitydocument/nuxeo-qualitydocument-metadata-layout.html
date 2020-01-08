@@ -1,0 +1,41 @@
+<!--
+`nuxeo-qualitydocument-metadata-layout`
+@group Nuxeo UI
+@element nuxeo-qualitydocument-metadata-layout
+-->
+<dom-module id="nuxeo-qualitydocument-metadata-layout">
+  <template>
+    <style>
+      *[role=widget] {
+        padding: 5px;
+      }
+    </style>
+    <div role="widget"><label>Document</label><nuxeo-document-attachments document="{{document}}" xpath="qualityDocument:document"></nuxeo-document-attachments></div>
+
+<div role="widget"><label>Application Date</label><div>[[formatDate(document.properties.qualityDocument:applicationDate)]]</div>
+</div>
+
+<div role="widget"><label>Title</label><div>[[document.properties.dc:title]]</div>
+</div>
+
+<div role="widget"><label>Review Date</label><div>[[formatDate(document.properties.qualityDocument:reviewDate)]]</div>
+</div>
+</template>
+
+  <script>
+    Polymer({
+      is: 'nuxeo-qualitydocument-metadata-layout',
+      behaviors: [Nuxeo.LayoutBehavior],
+      properties: {
+
+        /**
+         * @doctype QualityDocument
+         */
+        document: {
+          type: Object,
+        },
+
+      }
+    });
+  </script>
+</dom-module>

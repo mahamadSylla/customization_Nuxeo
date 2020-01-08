@@ -1,0 +1,280 @@
+<!--
+`nuxeo-qualitydocument-view-layout`
+@group Nuxeo UI
+@element nuxeo-qualitydocument-view-layout
+-->
+<dom-module id="nuxeo-qualitydocument-view-layout">
+  <template>
+    <style include="nuxeo-styles">
+      :host {
+        display: block;
+      }
+      #pdf{
+        width:50%;
+      }
+
+      .results {
+        @apply --layout-vertical;
+        @apply --layout-flex;
+        min-height: var(--nuxeo-document-content-min-height, calc(100vh - 216px - var(--nuxeo-app-top)));
+        margin-bottom: var(--nuxeo-document-content-margin-bottom, 0);
+      }
+
+      .results.dragging{
+        border: 2px dashed var(--nuxeo-primary-color);
+      }
+
+      .ellipsis {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        display: block;
+        width: calc(100% - 38px);
+      }
+
+      .capitalize {
+        text-transform: capitalize;
+      }
+
+      nuxeo-tag {
+        margin-right: 2px;
+      }
+
+      nuxeo-justified-grid {
+        height: calc(100vh - 10em);
+      }
+
+    </style>
+    <nuxeo-page-provider id="nxProvider" provider="advanced_document_content" page-size="40" aggregations="{{aggregations}}" enrichers="thumbnail, permissions" params="[[params]]" schemas="dublincore,common,uid,file" headers="{ &quot;X-NXfetch.document&quot;: &quot;properties&quot;, &quot;X-NXtranslate.directoryEntry&quot;: &quot;label&quot; }" fetch-aggregates="">
+    </nuxeo-page-provider>
+
+    <div role="widget"><label>Application Date</label><div>[[formatDate(document.properties.qualityDocument:applicationDate)]]</div></div>
+
+    <div role="widget"><label>Document</label><nuxeo-document-attachments document="{{document}}" xpath="qualityDocument:document"></nuxeo-document-attachments>
+    </div>
+
+    <div role="widget"><label>Document P D F</label><nuxeo-file value="[[document.properties.qualityDocument:documentPDF]]" readonly="true"></nuxeo-file>
+    </div>
+
+    <div role="widget"><label>Document Source Of Checking</label><div>[[document.properties.qualityDocument:document_source_of_checking]]</div>
+    </div>
+
+    <nuxeo-data-table role="widget" items="{{document.properties.qualityDocument:domain}}">
+
+
+      <nuxeo-data-table-column name="Domain">
+        <template>
+          [[item]]
+        </template>
+      </nuxeo-data-table-column>
+
+      <nuxeo-data-table-form>
+        <template>
+          <nuxeo-input value="{{item}}" label="Domain" type="text" required="true"></nuxeo-input>
+        </template>
+      </nuxeo-data-table-form>
+    </nuxeo-data-table>
+
+    <div role="widget"><label>Is Manually Created</label><div>[[document.properties.qualityDocument:isManuallyCreated]]</div>
+    </div>
+
+    <div role="widget"><label>Manager</label><div>[[document.properties.qualityDocument:manager]]</div>
+    </div>
+
+    <nuxeo-data-table role="widget" items="{{document.properties.qualityDocument:method}}">
+
+
+      <nuxeo-data-table-column name="Method">
+        <template>
+          [[item]]
+        </template>
+      </nuxeo-data-table-column>
+
+      <nuxeo-data-table-form>
+        <template>
+          <nuxeo-input value="{{item}}" label="Method" type="text"></nuxeo-input>
+        </template>
+      </nuxeo-data-table-form>
+    </nuxeo-data-table>
+
+    <nuxeo-data-table role="widget" items="{{document.properties.qualityDocument:method_validator}}">
+
+
+      <nuxeo-data-table-column name="Method Validator">
+        <template>
+          [[item]]
+        </template>
+      </nuxeo-data-table-column>
+
+      <nuxeo-data-table-form>
+        <template>
+          <nuxeo-input value="{{item}}" label="Method Validator" type="text" required="true"></nuxeo-input>
+        </template>
+      </nuxeo-data-table-form>
+    </nuxeo-data-table>
+
+    <div role="widget"><label>Modification Description</label><div>[[document.properties.qualityDocument:modificationDescription]]</div>
+    </div>
+
+    <div role="widget"><label>Original Document</label><div>[[document.properties.qualityDocument:originalDocument]]</div>
+    </div>
+
+    <nuxeo-data-table role="widget" items="{{document.properties.qualityDocument:perimeter}}">
+
+
+      <nuxeo-data-table-column name="Perimeter">
+        <template>
+          [[item]]
+        </template>
+      </nuxeo-data-table-column>
+
+      <nuxeo-data-table-form>
+        <template>
+          <nuxeo-input value="{{item}}" label="Perimeter" type="text" required="true"></nuxeo-input>
+        </template>
+      </nuxeo-data-table-form>
+    </nuxeo-data-table>
+
+    <div role="widget"><label>Primal Original Document</label><div>[[document.properties.qualityDocument:primalOriginalDocument]]</div>
+    </div>
+
+    <nuxeo-data-table role="widget" items="{{document.properties.qualityDocument:process}}">
+
+
+      <nuxeo-data-table-column name="Process">
+        <template>
+          [[item]]
+        </template>
+      </nuxeo-data-table-column>
+
+      <nuxeo-data-table-form>
+        <template>
+          <nuxeo-input value="{{item}}" label="Process" type="text"></nuxeo-input>
+        </template>
+      </nuxeo-data-table-form>
+    </nuxeo-data-table>
+
+    <div role="widget" id="pdf"><label>Published Document P D F</label><nuxeo-file value="[[document.properties.qualityDocument:publishedDocumentPDF]]" readonly="true"></nuxeo-file>
+    </div>
+
+    <div role="widget"><label>Quality Documenttype</label><div>[[document.properties.qualityDocument:qualityDocumenttype]]</div>
+    </div>
+
+    <nuxeo-data-table role="widget" items="{{document.properties.qualityDocument:references}}">
+
+
+      <nuxeo-data-table-column name="References">
+        <template>
+          [[item]]
+        </template>
+      </nuxeo-data-table-column>
+
+      <nuxeo-data-table-form>
+        <template>
+          <nuxeo-input value="{{item}}" label="References" type="text"></nuxeo-input>
+        </template>
+      </nuxeo-data-table-form>
+    </nuxeo-data-table>
+
+    <div role="widget"><label>Review Date</label><div>[[formatDate(document.properties.qualityDocument:reviewDate)]]</div>
+    </div>
+
+    <div role="widget"><label>Revision</label><div>[[document.properties.qualityDocument:revision]]</div>
+    </div>
+
+    <div role="widget"><label>Site Code</label><div>[[document.properties.qualityDocument:siteCode]]</div>
+    </div>
+
+    <div role="widget"><label>Subtype</label><div>[[document.properties.qualityDocument:subtype]]</div>
+    </div>
+
+    <div role="widget"><label>Template Rendering Title</label><div>[[document.properties.qualityDocument:templateRenderingTitle]]</div>
+    </div>
+
+    <div role="widget"><label>To Review Impact</label><div>[[document.properties.qualityDocument:toReviewImpact]]</div>
+    </div>
+
+    <nuxeo-data-table role="widget" items="{{document.properties.qualityDocument:validator}}">
+
+
+      <nuxeo-data-table-column name="Validator">
+        <template>
+          [[item]]
+        </template>
+      </nuxeo-data-table-column>
+
+      <nuxeo-data-table-form>
+        <template>
+          <nuxeo-input value="{{item}}" label="Validator" type="text"></nuxeo-input>
+        </template>
+      </nuxeo-data-table-form>
+    </nuxeo-data-table>
+
+    <div role="widget"><label>Wf Approbateur</label><div>[[document.properties.qualityDocument:wfApprobateur]]</div>
+    </div>
+
+    <nuxeo-data-table role="widget" items="{{document.properties.qualityDocument:wfApprobators}}">
+
+
+      <nuxeo-data-table-column name="Wf Approbators">
+        <template>
+          [[item]]
+        </template>
+      </nuxeo-data-table-column>
+
+      <nuxeo-data-table-form>
+        <template>
+          <nuxeo-input value="{{item}}" label="Wf Approbators" type="text"></nuxeo-input>
+        </template>
+      </nuxeo-data-table-form>
+    </nuxeo-data-table>
+
+    <div role="widget"><label>Wf Comment</label><div>[[document.properties.qualityDocument:wfComment]]</div>
+    </div>
+
+    <div role="widget"><label>Wf Editor</label><div>[[document.properties.qualityDocument:wfEditor]]</div>
+    </div>
+
+    <div role="widget"><label>Wf Status</label><div>[[document.properties.qualityDocument:wfStatus]]</div>
+    </div>
+
+    <nuxeo-data-table role="widget" items="{{document.properties.qualityDocument:wfValidators}}">
+
+
+      <nuxeo-data-table-column name="Wf Validators">
+        <template>
+          [[item]]
+        </template>
+      </nuxeo-data-table-column>
+
+      <nuxeo-data-table-form>
+        <template>
+          <nuxeo-input value="{{item}}" label="Wf Validators" type="text"></nuxeo-input>
+        </template>
+      </nuxeo-data-table-form>
+    </nuxeo-data-table>
+
+    <div role="widget"><label>Wf Reject Attachment</label><nuxeo-file value="[[document.properties.qualityDocument:wf_reject_attachment]]" readonly="true"></nuxeo-file>
+    </div>
+
+    <div role="widget"><label>Writer</label><div>[[document.properties.qualityDocument:writer]]</div>
+    </div>
+  </template>
+
+  <script>
+  Polymer({
+    is: 'nuxeo-qualitydocument-view-layout',
+    behaviors: [Nuxeo.DocumentContentBehavior],
+    properties: {
+
+      /**
+         * @doctype QualityDocument
+         */
+      document: {
+        type: Object,
+      },
+
+    }
+  });
+  </script>
+</dom-module>

@@ -1,0 +1,13 @@
+<link rel="import" href="document/elements-nuxeo-university/nuxeo-lifecycle-update-action.html">
+
+<nuxeo-slot-content slot="DOCUMENT_ACTIONS" name="button" order="1">
+  <template >
+  	 <nuxeo-filter document="[[document]]" expression="user.isAdministrator" state="project" user="[[user]]">
+      <template>
+        <nuxeo-lifecycle-update-action document="[[document]]"></nuxeo-lifecycle-update-action>
+      </template>
+    </nuxeo-filter>
+    
+     
+  </template>
+</nuxeo-slot-content>

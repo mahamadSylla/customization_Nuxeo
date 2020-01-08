@@ -1,0 +1,56 @@
+<!--
+`nuxeo-contact-create-layout`
+@group Nuxeo UI
+@element nuxeo-contact-create-layout
+-->
+<dom-module id="nuxeo-contact-create-layout">
+  <template>
+    <style>
+      *[role=widget] {
+        padding: 5px;
+      }
+    </style>
+    <nuxeo-input value="{{document.properties.dc:title}}" label="Nom d'utilisateur" type="text" required="true" role="widget"></nuxeo-input>
+
+<nuxeo-input value="{{document.properties.contact:Prenom}}" label="Prénom" type="text" role="widget"></nuxeo-input>
+
+<nuxeo-input value="{{document.properties.contact:Nom}}" label="Nom" type="text" role="widget"></nuxeo-input>
+
+<nuxeo-input value="{{document.properties.contact:Entreprise}}" label="Entreprise" type="text" role="widget"></nuxeo-input>
+
+<nuxeo-input value="{{document.properties.contact:Email}}" label="Email" type="text" role="widget"></nuxeo-input>
+
+<nuxeo-data-table role="widget" items="{{document.properties.contact:Groupe}}" orderable="true" editable="true" label="Groupes" multi-selection="true">
+
+
+<nuxeo-data-table-column name="Groupe">
+<template>
+[[item]]
+</template>
+</nuxeo-data-table-column>
+
+<nuxeo-data-table-form>
+  <template>
+    <nuxeo-input value="{{item}}" label="Groupe" type="text"></nuxeo-input>
+  </template>
+</nuxeo-data-table-form>
+</nuxeo-data-table>
+</template>
+
+  <script>
+  Polymer({
+    is: 'nuxeo-contact-create-layout',
+    behaviors: [Nuxeo.LayoutBehavior],
+    properties: {
+
+      /**
+         * @doctype Contact
+         */
+      document: {
+        type: Object,
+      },
+
+    }
+  });
+  </script>
+</dom-module>

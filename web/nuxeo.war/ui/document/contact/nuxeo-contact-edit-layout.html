@@ -1,0 +1,39 @@
+<!--
+`nuxeo-contact-edit-layout`
+@group Nuxeo UI
+@element nuxeo-contact-edit-layout
+-->
+<dom-module id="nuxeo-contact-edit-layout">
+  <template>
+    <style>
+      *[role=widget] {
+        padding: 5px;
+      }
+    </style>
+    <nuxeo-input value="{{document.properties.contact:Prenom}}" label="Prenom" type="text" role="widget"></nuxeo-input>
+
+<nuxeo-input value="{{document.properties.contact:Nom}}" label="Nom" type="text" role="widget"></nuxeo-input>
+
+<nuxeo-input value="{{document.properties.contact:Entreprise}}" label="Entreprise" type="text" role="widget"></nuxeo-input>
+
+<nuxeo-input value="{{document.properties.contact:Email}}" label="Email" type="text" role="widget"></nuxeo-input>
+
+</template>
+
+  <script>
+  Polymer({
+    is: 'nuxeo-contact-edit-layout',
+    behaviors: [Nuxeo.LayoutBehavior],
+    properties: {
+
+      /**
+         * @doctype Contact
+         */
+      document: {
+        type: Object,
+      },
+
+    }
+  });
+  </script>
+</dom-module>

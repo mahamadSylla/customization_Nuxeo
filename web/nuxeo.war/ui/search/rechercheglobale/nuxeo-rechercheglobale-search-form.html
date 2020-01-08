@@ -1,0 +1,68 @@
+<!--
+`nuxeo-rechercheglobale-search-form`
+@group Nuxeo UI
+@element nuxeo-rechercheglobale-search-form
+-->
+<dom-module id="nuxeo-rechercheglobale-search-form">
+  <template>
+
+<nuxeo-input value="{{params.qualityDocument_qualityDocumenttype}}" label="Document Type" type="text" role="widget"></nuxeo-input>
+
+<style>
+      *[role=widget] {
+        padding: 5px;
+      }
+    </style>
+
+<nuxeo-input value="{{params.qualityDocument_modificationDescription}}" label="Modification Description" type="text" role="widget"></nuxeo-input>
+
+<div role="widget"><label>Application Date</label><nuxeo-checkbox-aggregation value="{{params.qualityDocument_applicationDate_agg}}" data="[[aggregations.qualityDocument_applicationDate_agg]]"></nuxeo-checkbox-aggregation>
+</div>
+
+<nuxeo-input value="{{params.qualityDocument_perimeter}}" label="Perimeter" type="text" role="widget"></nuxeo-input>
+
+<nuxeo-input value="{{params.qualityDocument_domain}}" label="Domain" type="text" role="widget"></nuxeo-input>
+
+<nuxeo-input value="{{params.qualityDocument_manager}}" label="Manager" type="text" role="widget"></nuxeo-input>
+
+<nuxeo-input value="{{params.qualityDocument_method}}" label="Method" type="text" role="widget"></nuxeo-input>
+
+<nuxeo-input value="{{params.qualityDocument_method_validator}}" label="Method Validator" type="text" role="widget"></nuxeo-input>
+
+<nuxeo-input value="{{params.qualityDocument_process}}" label="Process" type="text" role="widget"></nuxeo-input>
+
+<div role="widget"><label>Review Date</label><nuxeo-checkbox-aggregation value="{{params.qualityDocument_reviewDate_agg}}" data="[[aggregations.qualityDocument_reviewDate_agg]]"></nuxeo-checkbox-aggregation>
+</div>
+
+<div role="widget"><label>To Review Impact</label><paper-checkbox checked="{{params.qualityDocument_toReviewImpact}}"></paper-checkbox>
+</div>
+
+<nuxeo-input value="{{params.qualityDocument_validator}}" label="Validator" type="text" role="widget"></nuxeo-input>
+
+</template>
+
+  <script>
+    Polymer({
+      is: 'nuxeo-rechercheglobale-search-form',
+      behaviors: [Nuxeo.LayoutBehavior],
+      properties: {
+
+        /**
+         * @search RechercheGlobale
+         */
+        params: {
+          type: Object,
+          value: {},
+          notify: true,
+        },
+
+        aggregations: {
+          type: Object,
+          value: {},
+          notify: true,
+        },
+
+      }
+    });
+  </script>
+</dom-module>

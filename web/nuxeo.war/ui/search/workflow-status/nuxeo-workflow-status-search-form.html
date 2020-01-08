@@ -1,0 +1,39 @@
+<!--
+`nuxeo-workflow-status-search-form`
+@group Nuxeo UI
+@element nuxeo-workflow-status-search-form
+-->
+<dom-module id="nuxeo-workflow-status-search-form">
+  <template>
+    <style>
+      *[role=widget] {
+        padding: 5px;
+      }
+    </style>
+  </template>
+
+  <script>
+  Polymer({
+    is: 'nuxeo-workflow-status-search-form',
+    behaviors: [Nuxeo.LayoutBehavior],
+    properties: {
+
+      /**
+         * @search workflow-status
+         */
+      params: {
+        type: Object,
+        value: {},
+        notify: true,
+      },
+
+      aggregations: {
+        type: Object,
+        value: {},
+        notify: true,
+      },
+
+    }
+  });
+  </script>
+</dom-module>
