@@ -1,0 +1,126 @@
+
+<dom-module id="nuxeo-contact-list">
+
+  <template>
+    <style include="iron-flex-factors">
+      :host {
+        display: block;
+        @apply --nuxeo-user-group-latest-layout;
+      }
+
+      .title {
+        margin: 0 0 .8em;
+        padding: 0;
+      }
+
+      .table {
+        border: 1px solid var(--divider-color);
+      }
+
+      .table-header {
+        @apply --layout-horizontal;
+        @apply --layout-center;
+        background-color: var(--nuxeo-table-header-background, #fafafa);
+        color: var(--nuxeo-text-default, rgba(0, 0, 0, 0.54));
+        font-weight: 400;
+        min-height: 48px;
+        padding: 0 0 0 12px;
+        border-bottom: 2px solid var(--nuxeo-border, #eee);
+        box-shadow: 0 -1px 0 rgba(0,0,0,0.2) inset;
+      }
+
+      .table-row {
+        @apply --layout-horizontal;
+        @apply --layout-center;
+        padding: 12px 0 12px 12px;
+        border-bottom: 1px solid var(--nuxeo-border, #eee);
+        cursor: pointer;
+      }
+
+      .table-row:hover {
+        background: var(--nuxeo-container-hover, #fafafa);
+      }
+
+      .table-actions {
+        width: 3em;
+      }
+
+      .table {
+        border: 1px solid var(--nuxeo-border, #eee);
+      }
+
+      h3 iron-icon {
+         width: 1.3em;
+         margin-right: .2rem;
+      }
+
+      .emptyResult {
+        opacity: .5;
+        display: block;
+        font-weight: 300;
+        padding: 1.5em .7em;
+        text-align: center;
+      }
+
+      .preserve-white-space {
+        white-space: pre;
+      }
+    </style>
+
+    <nuxeo-card>
+        <nuxeo-page-provider id="contactsProvider" provider="contacts_listing" schemas="dublincore,uid" enrichers="thumbnail"></nuxeo-page-provider>
+        <nuxeo-data-table id="contacts" max-items="15" empty-label="Nous n'avez aucun contact" nx-provider="contactsProvider" items = "{{contacts}}"
+         	empty-label-when-filtered="Nous n'avez aucun contact" on-row-clicked="_navigate">
+            <nuxeo-data-table-column name="Added By" flex="100">
+               <template>
+                 <a class="ellipsis" href$="[[urlFor('browse', item.path)]]">[[item.addedBy]]</a>
+                 <span>[[item.addedBy]]</span>
+               </template>
+            </nuxeo-data-table-column>
+            <nuxeo-data-table-column name="E-mail" flex="50">
+               <template>
+                  <span>[[item.email]]</span>
+               </template>
+            </nuxeo-data-table-column>
+       </nuxeo-data-table>
+   </nuxeo-card>
+ </template>
+
+  <script>
+    {
+      class ContactList extends Polymer.mixinBehaviors([Nuxeo.I18nBehavior], Nuxeo.Element) {
+
+        static get is() {
+          return 'nuxeo-contact-list';
+        }
+
+        static get properties() {
+          return {
+            //Holds the list of contacts
+            contactList: Object,
+			contacts: {
+				type: Array,
+				value: []
+			}
+          };
+        }
+
+         ready() {
+          super.ready();
+          this._initContacts();
+        }
+
+        _initContacts() {
+          //this.$.contactsProvider.query = 'SELECT * FROM Document';
+          this.$.contactsProvider.params = ['%'];
+          this.$.contactsProvider.fetch().then(function(result) {
+            this.contacts = result.entries;
+          }.bind(this));
+        }
+      }
+
+      customElements.define(ContactList.is, ContactList);
+      Nuxeo.ContactList = ContactList;
+    }
+  </script>
+</dom-module>

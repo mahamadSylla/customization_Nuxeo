@@ -1,0 +1,213 @@
+<dom-module id="nuxeo-wabtec-create-contact">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      .header {
+        @apply --layout-horizontal;
+        @apply --layout-center;
+        margin-bottom: 16px;
+      }
+
+      .header>iron-icon {
+        padding: 8px;
+      }
+
+      .form-buttons {
+        margin-top: 16px;
+      }
+
+      #errors {
+        color: red;
+        margin: 1em 0;
+      }
+
+      /* buttons */
+      paper-button.primary {
+        background-color: var(--nuxeo-button-primary, #00adff);
+        color: #fff;
+      }
+
+      paper-button.primary:hover,
+      paper-button.primary:focus {
+        background-color: var(--nuxeo-button-primary-focus, #0079b3);
+        font-weight: inherit;
+        color: #fff !important;
+      }
+    </style>
+
+    <nuxeo-connection user="{{_currentUser}}"></nuxeo-connection>
+
+
+    <nuxeo-operation id="createEntries" op="Directory.CreateEntries"></nuxeo-operation>
+
+    <div class="header">
+      <iron-icon icon="nuxeo:user"></iron-icon>
+      <h3>Create Contact</h3>
+    </div>
+
+    <iron-form id="form">
+      <form>
+        <nuxeo-input label="E-Mail" value="{{user.userEmail}}" name="userEmail" id="userEmail" type="email"
+          placeholder="Enter a valid e-mail" required>
+        </nuxeo-input>
+        <div style="float: right; margin-right: 20%; visibility: hidden">
+          <span id="result"></span>
+        </div>
+        <div class="form-buttons">
+          <paper-button noink id="cancelButton" on-click="_cancel">[[i18n('command.cancel')]]</paper-button>
+          <paper-button noink id="createButton" class="primary" on-click="_submit">[[i18n('command.create')]]
+          </paper-button>
+          <paper-button noink id="createAnotherButton" class="primary" on-click="_submitAnother">
+            [[i18n('createUser.createAnother')]]</paper-button>
+        </div>
+      </form>
+    </iron-form>
+  </template>
+
+  <script>
+    {
+      /**
+       * Used by `nuxeo-user-group-management`
+       * @appliesMixin Nuxeo.I18nBehavior
+       * @memberof Nuxeo
+       */
+      class CreateContact extends Polymer.mixinBehaviors([Nuxeo.I18nBehavior], Nuxeo.Element) {
+
+        static get is() {
+          return 'nuxeo-wabtec-create-contact';
+        }
+
+        static get properties() {
+          return {
+            user: {
+              type: Object,
+              value: {}
+            },
+
+            /**
+             * If true, allows to create a new user immediately after the current one is created
+             */
+            _createAnother: {
+              type: Boolean,
+              value: false,
+            },
+
+            _currentUser: {
+              type: Object,
+            }
+          };
+        }
+
+        ready() {
+          super.ready();
+          this.$.form.addEventListener('iron-form-presubmit', (event) => {
+            event.preventDefault();
+            this._create();
+          });
+        }
+
+        /**
+         * Verify and validate email address enter by the user.
+         */
+        _verifyEmail(email) {
+          var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          return re.test(email);
+        }
+
+        _validateEmail() {
+          var $result = this.$.result;
+          var email = this.$.userEmail.value;
+
+          if (!this._verifyEmail(email)) {
+            $result.style.visibility = "visible";
+            $result.innerHTML = email + " is not an e-mail valid!";
+            $result.style.color = "red";
+          } else if (this._verifyEmail(email) && this._createAnother) {
+            $result.style.visibility = "visible";
+            $result.innerHTML = email + " added to contacts!";
+            $result.style.color = "green";
+
+            setTimeout(function () {
+              $result.style.visibility = "hidden";
+            }, 2000);
+          }
+          return false;
+        }
+
+        /**
+         * Submits the form with `_createAnother` option set to true.
+         */
+        _submitAnother() {
+          this._createAnother = true;
+          this._validateEmail();
+          this.$.form.submit();
+        }
+
+        _goHome() {
+          this.dispatchEvent(new CustomEvent('goHome', {
+            composed: true,
+            bubbles: true,
+          }));
+        }
+
+        /**
+         * Submits the form.
+         */
+        _submit() {
+          this._createAnother = false;
+          this._validateEmail();
+          this.$.form.submit();
+        }
+
+        /**
+         * Creates a new user if the form was successfully submitted.
+         */
+        _create() {
+          this._doCreate(this.user).then(() => {
+            this._resetFields();
+            if (!this._createAnother) {
+              this._goHome();
+            }
+          })
+            .catch((error) => {
+              this.errors = error.message;
+            });
+        }
+
+
+        _doCreate(user) {
+          if (this.user.userEmail && !this.shadowRoot.querySelector('#userEmail').validate()) {
+            return;
+          }
+          const entries = [{
+            "id_contact": this._currentUser.id + "_" + this.user.userEmail,
+            "email": this.user.userEmail,
+            "addedBy": this._currentUser.id
+          }]
+
+
+          this.$.createEntries.params = { "directoryName": "contactsDirectory", "entries": JSON.stringify(entries) };
+          return this.$.createEntries.execute().then(() => {
+            //this.fire('toast',"Contact ajouté!");
+          });
+        }
+
+        _cancel() {
+          this._resetFields();
+          this._goHome();
+        }
+
+        _resetFields() {
+          this.user = { groups: [] };
+          this.errors = '';
+        }
+      }
+
+      customElements.define(CreateContact.is, CreateContact);
+      Nuxeo.CreateContact = CreateContact;
+    }
+  </script>
+</dom-module>

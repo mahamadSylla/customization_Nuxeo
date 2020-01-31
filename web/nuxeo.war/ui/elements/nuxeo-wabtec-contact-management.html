@@ -1,0 +1,351 @@
+<link rel="import" href="./nuxeo-wabtec-create-contact.html">
+<link rel="import" href="./nuxeo-wabtec-user-management.html">
+<link rel="import" href="./nuxeo-contact-list.html">
+
+<dom-module id="nuxeo-wabtec-contact-management">
+  <template>
+    <style include="iron-flex iron-flex-alignment">
+      :host {
+        display: block;
+        position: relative;
+        @apply --layout-flex;
+      }
+
+      #createDropdown {
+        position: absolute;
+        right: 0;
+        padding: 0;
+        top: 15px;
+      }
+      .contact_listing{
+        width: 70%;
+        margin: 0 10%;
+      }
+      nuxeo-data-table{
+        height:500px;
+
+      }
+      paper-menu-button {
+        width: 130px;
+        height: 48px;
+        margin-bottom: 16px;
+      }
+
+      paper-button {
+        width: 100%;
+      }
+
+      paper-button iron-icon {
+        padding-right: 8px;
+      }
+
+      paper-listbox {
+        width: 130px;
+        outline: none;
+      }
+
+      paper-listbox paper-icon-item iron-icon {
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+
+      paper-listbox paper-icon-item:hover {
+        background: var(--nuxeo-container-hover, #fafafa);
+        cursor: pointer;
+      }
+
+      /* buttons */
+      paper-button.primary {
+        background-color: var(--nuxeo-button-primary, #00adff);
+        color: #fff;
+      }
+
+      paper-button.primary:hover,
+      paper-button.primary:focus {
+        background-color: var(--nuxeo-button-primary-focus, #0079b3);
+        font-weight: inherit;
+        color: #fff !important;
+      }
+      .add-button:hover{
+        background-color: #e6e6e6;
+      }
+    </style>
+
+    <nuxeo-connection user="{{_currentUser}}"></nuxeo-connection>
+    <nuxeo-resource id="editRequest" path="user/[[username]]"></nuxeo-resource>
+    <paper-toast id="toast"></paper-toast>
+    <iron-pages selected="[[page]]" attr-for-selected="name">
+      <section name="search">
+        <div class="horizontal layout center">
+          <div class="flex">
+            <paper-menu-button no-animations id="createDropdown" no-overlap horizontal-align="right"
+              vertical-align="top" vertical-offset="-4">
+              <paper-button noink class="primary" id="createButton" slot="dropdown-trigger" on-click="_createUser">
+                <iron-icon icon="nuxeo:add"></iron-icon>
+                <div>[[i18n('userGroupManagement.new.usergroup')]]</div>
+              </paper-button>
+            </paper-menu-button>
+          </div>
+        </div>
+        <nuxeo-card>
+          <nuxeo-input name="contactsFilter" id="contacts_filter" placeholder="Filter your contacts by e-mail"
+            on-keyup="contactsFilter" style="width: 60%; float: left">
+          </nuxeo-input>
+          <br><br>
+          <div style="float: right; margin-right: 20%; visibility: hidden">
+            <span id="contactsFilterMessage"></span>
+          </div>
+        </nuxeo-card>
+
+        <!-- display contacts list-->
+        <nuxeo-card class="contact_listing">
+          <nuxeo-page-provider id="contactsProvider" provider="contacts_listing"
+            schemas="dublincore,uid,contactsDirectorySchema" enrichers="thumbnail"></nuxeo-page-provider>
+          <nuxeo-data-table  max-items="20" items="{{contacts}}" nx-provider ="contactsProvider" empty-label="Aucun contact correspondant!"
+             empty-label-when-filtered="Nous n'avez pas de contact" on-row-clicked="_navigate">
+            <nuxeo-data-table-column name="Added By" flex="100">
+              <template>
+                <span>[[item.addedBy]]</span>
+              </template>
+            </nuxeo-data-table-column>
+            <nuxeo-data-table-column name="E-mail" flex="50">
+              <template>
+                <span>[[item.email]]</span>
+              </template>
+            </nuxeo-data-table-column>
+            <nuxeo-data-table-column name="Action" flex="50">
+              <template>
+                <!-- <paper-button noink id="editButton" on-click="" class="add-button" raised> 
+                  <iron-icon icon="nuxeo:edit"on-click="" ></iron-icon>
+                </paper-button>  -->
+                <iron-icon icon="nuxeo:edit" on-click="_toggleEditUser" ></iron-icon>
+               
+              </template>
+            </nuxeo-data-table-column>
+          </nuxeo-data-table>
+        </nuxeo-card>
+
+        <!-- contact edit -->
+        <nuxeo-dialog id="editUserDialog" with-backdrop>
+            <h2>Modifier un contact</h2>
+            <iron-form  id="editUserForm">
+              <form class="vertical layout">
+                <nuxeo-input label="E-mail" value="[[contact.properties.email]]"
+                             readonly required></nuxeo-input>
+                <!-- <nuxeo-layout id="layout" href="[[_layoutHref('nuxeo-edit-user.html')]]"></nuxeo-layout> -->
+              </form>
+            </iron-form>
+            <div class="buttons horizontal end-justified layout">
+              <div class="flex start-justified">
+                <paper-button noink dialog-dismiss>[[i18n('command.cancel')]]</paper-button>
+              </div>
+              <paper-button noink class="primary" on-click="_submitEditUser">
+                [[i18n('command.save.changes')]]
+              </paper-button>
+            </div>
+          </nuxeo-dialog>
+        
+      </section>
+
+      <section name="create-user">
+        <nuxeo-card>
+          <nuxeo-wabtec-create-contact readonly$="[[readonly]]"></nuxeo-wabtec-create-contact>
+        </nuxeo-card>
+      </section>
+
+      <section name="manage-user">
+        <nuxeo-wabtec-user-management username="[[selectedUser]]" readonly$="[[readonly]]">
+        </nuxeo-wabtec-user-management>
+      </section>
+    </iron-pages>
+  </template>
+
+  <script>
+    {
+      class NuxeoWabtecContactManagement
+        extends Polymer.mixinBehaviors([Nuxeo.I18nBehavior, Nuxeo.FiltersBehavior], Nuxeo.Element) {
+
+        static get is() {
+          return 'nuxeo-wabtec-contact-management';
+        }
+
+        static get properties() {
+          return {
+            /**
+             * The user-group-management page to be displayed. Possible values are:
+             * `search`, `create-user`, `manage-user`, `create-group` and `manage-group`.
+             */
+            page: {
+              type: String,
+              value: 'search',
+              notify: true,
+            },
+            contact: Object,
+            /**
+             * Selected user id.
+             */
+            selectedUser: String,
+
+            /**
+             * True if currently in read only mode.
+             */
+            readonly: {
+              type: Boolean,
+              value: false,
+              reflectToAttribute: true,
+            },
+
+            _currentUser: {
+              type: Object,
+            },
+            
+            /**
+             * contacts list to display
+             */
+             contacts: {
+              type: Array,
+              value: []
+            }
+          };
+        }
+
+        ready() {
+          super.ready();
+          this.$.contactsProvider.params = ['%'];
+          var contact = [];
+          this.$.contactsProvider.fetch().then(function (result) {
+            for (var i = 0; i < result.entries.length; i++) {
+              contact.push({"addedBy":result.entries[i].properties["contactsDirectorySchema:addedBy"], 
+              "email":result.entries[i].properties["contactsDirectorySchema:email"], 
+              "id_contact":result.entries[i].properties["contactsDirectorySchema:id_contact"]});
+            }
+            this.contacts = contact;
+          }.bind(this));
+
+          // dynamic loading of user layouts
+          if (!this._isRegistered('nuxeo-view-user')) {
+            Polymer.importHref(this.resolveUrl('../nuxeo-user-group-management/nuxeo-view-user.html'));
+          }
+          if (!this._isRegistered('nuxeo-edit-user')) {
+            Polymer.importHref(this.resolveUrl('../nuxeo-user-group-management/nuxeo-edit-user.html'));
+          }
+
+          window.addEventListener('manageUser', (e) => {
+            this._manageUser(e);
+          });
+
+          this.addEventListener('goHome', this._goSearch);
+          this.addEventListener('nuxeo-wabtec-create-contact', this._toast);
+          this.addEventListener('nuxeo-user-invited', this._toast);
+        }
+
+        /**
+         * management contacts.
+         */
+        _toggleEditUser() {
+          //this.$.layout.model = { user: JSON.parse(JSON.stringify(this.user.properties)) };
+          this.$.editUserDialog.toggle();
+        }
+
+        _submitEditUser() {
+          this.$.editUserForm.submit();
+        }
+
+        /**
+         * Init user's contacts.
+         */
+        contactsFilter(event) {
+          var contact = [];
+          var filterValue = event.currentTarget.value;
+          var filterLength = filterValue.length;
+          var errorMessage = this.$.contactsFilterMessage;
+
+          if(filterLength >= 1 && filterLength < 3){
+            errorMessage.style.visibility = "visible";
+            errorMessage.innerHTML = 'Please enter more characters ' + (3-filterLength);
+            errorMessage.style.color = "red";
+          }else if(filterLength >= 3 || filterLength < 1) {
+              errorMessage.style.visibility = "hidden";
+              this.$.contactsProvider.params = [filterValue];
+              this.$.contactsProvider.fetch().then(function (result) {
+                if(result.entries.length >= 2){
+                  for (var i = 0; i < result.entries.length; i++) {
+                    contact.push({"addedBy":result.entries[i].properties["contactsDirectorySchema:addedBy"], 
+                    "email":result.entries[i].properties["contactsDirectorySchema:email"], 
+                    "id_contact":result.entries[i].properties["contactsDirectorySchema:id_contact"]});
+                  }
+                  this.contacts = contact;
+                }else if(result.entries.length == 1 ){
+                  contact.push({"addedBy":result.entries[0].properties["contactsDirectorySchema:addedBy"], 
+                    "email":result.entries[0].properties["contactsDirectorySchema:email"], 
+                    "id_contact":result.entries[0].properties["contactsDirectorySchema:id_contact"]});
+                  this.contacts = contact;
+                }
+                this.contacts = contact;
+              }.bind(this));
+            }
+         
+        }
+
+        /**
+         * Go to the 'search' page.
+         */
+        _goSearch() {
+          this.selectedUser = null;
+          this.page = 'search';
+          //this.$$('nuxeo-user-group-search')._searchTermChanged();
+        }
+
+        /**
+         * Got to the 'create-user' page.
+         */
+        _createUser() {
+          this.page = 'create-user';
+        }
+
+        _manageUser(e) {
+          this.selectedUser = null;
+          this.selectedUser = e.detail.user;
+          this.page = 'manage-user';
+        }
+
+        _hasAdministrationPermissions(user) {
+          return user && (user.isAdministrator || this.isMember(user, 'powerusers'));
+        }
+
+        _canCreateUserGroup(readonly, currentUser) {
+          return !readonly && this._hasAdministrationPermissions(currentUser);
+        }
+
+        /**
+         * Displays a message.
+         */
+        _toast(event) {
+          let msg;
+          switch (event.type) {
+            case 'nuxeo-contact-created':
+            case 'nuxeo-user-invited':
+              msg = `User ${event.detail.id} created`;
+              break;
+            default:
+            // do nothing
+          }
+          if (msg) {
+            this.$.toast.text = msg;
+            this.$.toast.open();
+          }
+        }
+
+        /**
+         * Determines whether a custom element is registered
+         */
+        _isRegistered(tag) {
+          return document.createElement(tag) instanceof Polymer.Element;
+        }
+      }
+
+      customElements.define(NuxeoWabtecContactManagement.is, NuxeoWabtecContactManagement);
+      Nuxeo.NuxeoWabtecContactManagement = NuxeoWabtecContactManagement;
+    }
+  </script>
+</dom-module>
